@@ -1,4 +1,3 @@
-
 import CustomizationSection from "@/src/feature/public/home/components/CustomizationSection";
 import FeaturedProducts from "@/src/feature/public/home/components/FeaturedProducts";
 import FinalCtaSection from "@/src/feature/public/home/components/FinalCtaSection";
@@ -13,6 +12,7 @@ export default function HomePage() {
   return (
     <main className="w-full bg-background">
       <HeroBanner />
+
       <FeaturedProducts />
       <TrustStrip />
       <CustomizationSection />
