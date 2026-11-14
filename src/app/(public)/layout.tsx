@@ -1,5 +1,4 @@
-import LanguageSwitcher from "@/src/feature/common/components/LanguageSwitcher";
-import Navbar from "@/src/feature/layout/Navbar";
+import { PublicHeader } from "@/src/feature/layout/components/public/PublicHeader";
 
 export default function PublicLayout({
   children,
@@ -8,9 +7,8 @@ export default function PublicLayout({
 }) {
   return (
     <main>
+      <PublicHeader />
 
-      <Navbar />
-      
       {children}
     </main>
   );
