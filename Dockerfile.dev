@@ -1,0 +1,12 @@
+FROM node:26-alpine
+
+WORKDIR /app
+
+# Install pnpm globally inside the container
+RUN npm install -g pnpm
+
+# Expose the default Next.js port
+EXPOSE 3000
+
+# Run the development server
+CMD ["pnpm", "dev"]
