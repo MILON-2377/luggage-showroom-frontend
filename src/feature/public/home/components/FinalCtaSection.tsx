@@ -1,14 +1,10 @@
-// ==============================================================================
-// FILE 3: components/FinalCtaSection.jsx (React Component with 3D/Interactive Canvas Simulation)
-// Save as: app/components/FinalCtaSection.jsx (or equivalent)
-// ==============================================================================
 
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useLanguage } from "@/src/providers";
+import { useLanguage } from "@/providers";
 
 // Sample luggage product renders matching your categories/uploaded images
 const categoryShowcaseImages = [

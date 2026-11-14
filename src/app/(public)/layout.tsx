@@ -1,5 +1,4 @@
-import LanguageSwitcher from "@/src/feature/common/components/LanguageSwitcher";
-import Navbar from "@/src/feature/layout/Navbar";
+import Navbar from "@/feature/layout/Navbar";
 
 export default function PublicLayout({
   children,

@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useLanguage } from "@/src/providers";
+import { useLanguage } from "@/providers";
 
 type ColorKey = "black" | "beige" | "olive" | "silver";
 

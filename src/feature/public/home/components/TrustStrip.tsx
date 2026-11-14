@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useLanguage } from "@/src/providers";
+import { useLanguage } from "@/providers";
 
 
 export default function TrustStrip() {

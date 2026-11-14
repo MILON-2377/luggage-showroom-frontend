@@ -1,8 +1,8 @@
 
 "use client";
 
+import { useLanguage } from "@/providers";
 import Image from "next/image";
-import { useLanguage } from "@/src/providers";
 
 const navItems = [
   "Home",

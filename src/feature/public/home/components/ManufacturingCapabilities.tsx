@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useLanguage } from "@/src/providers";
+import { useLanguage } from "@/providers";
 
 const capabilityIcons = [
   // 01. Product Development & Prototyping

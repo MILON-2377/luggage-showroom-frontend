@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
-import { useLanguage } from "@/src/providers";
+import { useLanguage } from "@/providers";
 
 const productImages = [
   "/1.png",

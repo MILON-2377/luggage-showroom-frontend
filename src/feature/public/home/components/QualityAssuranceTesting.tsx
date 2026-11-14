@@ -4,7 +4,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useLanguage } from "@/src/providers";
+import { useLanguage } from "@/providers";
 
 export default function QualityAssuranceTesting() {
   const { t } = useLanguage();
