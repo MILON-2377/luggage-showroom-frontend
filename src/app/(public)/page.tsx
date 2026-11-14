@@ -7,12 +7,13 @@ import ProductEngineering from "@/src/feature/public/home/components/ProductEngi
 import QualityAssuranceTesting from "@/src/feature/public/home/components/QualityAssuranceTesting";
 import ClientReviews from "@/src/feature/public/home/components/Reviews";
 import TrustStrip from "@/src/feature/public/home/components/TrustStrip";
+import ContactUsPage from "./contact-us/page";
 
 export default function HomePage() {
   return (
     <main className="w-full bg-background">
       <HeroBanner />
-
+      
       <FeaturedProducts />
       <TrustStrip />
       <CustomizationSection />
@@ -20,6 +21,7 @@ export default function HomePage() {
       <ManufacturingCapabilities />
       <QualityAssuranceTesting />
       <ClientReviews />
+      <ContactUsPage />
       <FinalCtaSection />
     </main>
   );

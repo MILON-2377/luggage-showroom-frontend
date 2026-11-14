@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { useLanguage } from "@/src/providers";
+import { Button } from "@/src/components/ui/button";
 
 const productImages = [
   "/1.png",
@@ -123,21 +124,21 @@ export default function FeaturedProducts() {
           {/* Slider Controls */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => scroll("left")}
-                aria-label="Scroll left"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--primary)] shadow-sm transition-all duration-300 hover:border-[var(--primary)] hover:bg-[var(--primary)] hover:text-white"
-              >
+             
+              <Button onClick={() => scroll("left")}
+                variant="outline"
+                >
                 ←
-              </button>
+              </Button>
 
-              <button
-                onClick={() => scroll("right")}
-                aria-label="Scroll right"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--primary)] shadow-sm transition-all duration-300 hover:border-[var(--primary)] hover:bg-[var(--primary)] hover:text-white"
-              >
+               <Button onClick={() => scroll("right")}
+                variant="outline"
+                >
                 →
-              </button>
+              </Button>
+             
+
+            
             </div>
 
             <Link
