@@ -7,7 +7,7 @@ import {
   useReducedMotion,
   useSpring,
 } from "motion/react";
-import { ArrowUpRight, Package, Plus, ScanEye } from "lucide-react";
+import { ArrowUpRight, Package, Plus } from "lucide-react";
 
 import { Button } from "@/src/components/ui/button";
 import { useLanguage } from "@/src/providers";
@@ -36,9 +36,7 @@ export default function ProductCard({
   const reducedMotion = useReducedMotion();
 
   const [imageIndex, setImageIndex] = useState(0);
-  const [failedImage, setFailedImage] = useState<string | null>(
-    null,
-  );
+  const [failedImage, setFailedImage] = useState<string | null>(null);
 
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
@@ -53,8 +51,7 @@ export default function ProductCard({
     damping: 22,
   });
 
-  const image =
-    product.images[imageIndex] || product.images[0];
+  const image = product.images[imageIndex] || product.images[0];
 
   const category = c.categories.find(
     (item) => item.id === product.category,
@@ -71,21 +68,16 @@ export default function ProductCard({
         if (
           reducedMotion ||
           event.pointerType === "touch" ||
-          !window.matchMedia(
-            "(hover: hover) and (pointer: fine)",
-          ).matches
+          !window.matchMedia("(hover: hover) and (pointer: fine)").matches
         ) {
           return;
         }
 
-        const bounds =
-          event.currentTarget.getBoundingClientRect();
+        const bounds = event.currentTarget.getBoundingClientRect();
 
-        const x =
-          (event.clientX - bounds.left) / bounds.width - 0.5;
+        const x = (event.clientX - bounds.left) / bounds.width - 0.5;
 
-        const y =
-          (event.clientY - bounds.top) / bounds.height - 0.5;
+        const y = (event.clientY - bounds.top) / bounds.height - 0.5;
 
         pointerX.set(-y * 10);
         pointerY.set(x * 14);
@@ -107,20 +99,17 @@ export default function ProductCard({
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_35%_25%,rgba(255,255,255,0.55),transparent_65%)]"
         />
 
-        {/* Product reference */}
-        <span className="pointer-events-none absolute left-[16%] top-[19%] z-10 font-serif text-[10px] italic tracking-wider text-secondary">
-          {product.id.toUpperCase()}
-        </span>
+        
 
         {/* Quick view */}
         <Button
           variant="ghost"
           size="icon"
           onClick={onOpen}
-          aria-label={`${c.quickView}: ${copy.name}`}
+          aria-label={`${t.productDetails.fullDetails}: ${copy.name}`}
           className="absolute right-[12%] top-[15%] z-20 size-10 rounded-full text-secondary"
         >
-          <ScanEye className="size-4" aria-hidden="true" />
+          <ArrowUpRight className="size-4" aria-hidden="true" />
         </Button>
 
         {/* Floating product shadow */}
@@ -146,7 +135,7 @@ export default function ProductCard({
         <button
           type="button"
           onClick={onOpen}
-          aria-label={`${c.quickView}: ${copy.name}`}
+          aria-label={`${t.productDetails.fullDetails}: ${copy.name}`}
           className="absolute inset-x-[9%] bottom-[20%] top-[25%] flex items-center justify-center rounded-3xl outline-none [perspective:800px] focus-visible:ring-2 focus-visible:ring-accent/50"
         >
           {image && failedImage !== image ? (
@@ -198,12 +187,9 @@ export default function ProductCard({
           <span aria-hidden="true">·</span>
 
           <span className="inline-flex items-center gap-1">
-            {c.quickView}
+            {t.productDetails.fullDetails}
 
-            <ArrowUpRight
-              className="size-3"
-              aria-hidden="true"
-            />
+            <ArrowUpRight className="size-3" aria-hidden="true" />
           </span>
         </button>
       </div>
@@ -214,7 +200,7 @@ export default function ProductCard({
           {category}
         </p>
 
-        <h3 className="mt-3 font-serif text-[27px] font-normal leading-[1.12] tracking-tight text-primary">
+       <h3 className="mt-3 min-h-[3.36em] font-serif text-[27px] font-normal leading-[1.12] tracking-tight text-primary">
           <button
             type="button"
             onClick={onOpen}
@@ -223,6 +209,7 @@ export default function ProductCard({
             {copy.name}
           </button>
         </h3>
+        <Button variant="outline" onClick={onOpen} className="mt-4 w-full justify-between gap-3 rounded-xl text-xs"><span>{t.productDetails.fullDetails}</span><ArrowUpRight className="size-4 text-accent" aria-hidden="true" /></Button>
 
         <p className="mt-3 line-clamp-2 text-[11px] leading-6 text-secondary">
           {copy.description}
@@ -266,11 +253,7 @@ export default function ProductCard({
               title={c.inquire}
               className="size-10 shrink-0 rounded-full border-border bg-surface"
             >
-              <Plus
-                className="size-4"
-                strokeWidth={1.3}
-                aria-hidden="true"
-              />
+              <Plus className="size-4" strokeWidth={1.3} aria-hidden="true" />
             </Button>
           </div>
         </div>
