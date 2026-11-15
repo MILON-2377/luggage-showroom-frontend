@@ -1,7 +1,5 @@
-import React from 'react'
+import ProductSection from "@/src/feature/public/product/components/ProductSection";
 
 export default function ProductPage() {
-  return (
-    <div>ProductPage</div>
-  )
+  return <ProductSection />;
 }
