@@ -15,7 +15,7 @@ import { useLanguage } from "@/src/providers";
 import type {
   Product,
   ProductCopy,
-} from "./types/product.types";
+} from "../types/product.types";
 
 interface ProductCardProps {
   product: Product;

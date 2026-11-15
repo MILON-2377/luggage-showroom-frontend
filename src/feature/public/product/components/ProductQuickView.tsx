@@ -4,7 +4,7 @@ import { X, ArrowUpRight } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { useLanguage } from "@/src/providers";
 import ProductCardGallery from "./ProductCardGallery";
-import type { Product, ProductCopy } from "./types/product.types";
+import type { Product, ProductCopy } from "../types/product.types";
 export default function ProductQuickView({
   product,
   copy,

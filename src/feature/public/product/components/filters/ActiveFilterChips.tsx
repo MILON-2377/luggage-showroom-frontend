@@ -2,7 +2,7 @@
 import { X } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { useLanguage } from "@/src/providers";
-import type { FilterProps } from "../types/product-query.types";
+import type { FilterProps } from "../../types/product-query.types";
 export default function ActiveFilterChips({ query, onChange }: FilterProps) {
   const { t } = useLanguage();
   const c = t.productPage;

@@ -1,4 +1,4 @@
-import type { Product } from "../components/types/product.types";
+import type { Product } from "../types/product.types";
 
 // Demonstration concepts, not verified catalogue records.
 export const draftProducts: Product[] = [

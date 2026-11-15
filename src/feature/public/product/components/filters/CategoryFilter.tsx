@@ -1,7 +1,7 @@
 "use client";
 import { useLanguage } from "@/src/providers";
 import FilterGroup from "./FilterGroup";
-import type { FilterProps } from "../types/product-query.types";
+import type { FilterProps } from "../../types/product-query.types";
 export default function CategoryFilter({ query, onChange }: FilterProps) {
   const { t } = useLanguage();
   const options = t.productPage.categories;

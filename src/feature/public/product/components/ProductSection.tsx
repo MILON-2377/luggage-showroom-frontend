@@ -16,7 +16,7 @@ import ProductFilters from "./filters/ProductFilters";
 import ActiveFilterChips from "./filters/ActiveFilterChips";
 import MobileFilterDrawer from "./filters/MobileFilterDrawer";
 import { draftProducts } from "../data/products";
-import type { Product, ProductCopy } from "./types/product.types";
+import type { Product, ProductCopy } from "../types/product.types";
 export default function ProductSection({
   products = draftProducts,
   loading = false,

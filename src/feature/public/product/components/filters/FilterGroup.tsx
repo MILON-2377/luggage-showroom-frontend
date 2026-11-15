@@ -3,7 +3,7 @@ import { ChevronDown } from "lucide-react";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/lebel";
 import { useId } from "react";
-import type { Option } from "../types/product.types";
+import type { Option } from "../../types/product.types";
 export default function FilterGroup({
   title,
   options,

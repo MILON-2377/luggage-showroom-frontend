@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ProductQuery, QueryPatch } from "../types/product-query.types";
+import type { ProductQuery, QueryPatch } from "../../types/product-query.types";
 const initial: ProductQuery = {
   search: "",
   categories: [],

@@ -6,7 +6,7 @@ import CategoryFilter from "./CategoryFilter";
 import MaterialFilter from "./MaterialFilter";
 import CustomizationFilter from "./CustomizationFilter";
 import ClearFiltersButton from "./ClearFiltersButton";
-import type { FilterProps } from "../types/product-query.types";
+import type { FilterProps } from "../../types/product-query.types";
 export default function ProductFilters({
   query,
   onChange,

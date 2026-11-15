@@ -2,7 +2,7 @@
 import { useId } from "react";
 import { Label } from "@/src/components/ui/lebel";
 import { useLanguage } from "@/src/providers";
-import type { ProductSortValue } from "./types/product-query.types";
+import type { ProductSortValue } from "../types/product-query.types";
 export default function ProductSort({
   value,
   onChange,

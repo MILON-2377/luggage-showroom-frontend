@@ -1,6 +1,6 @@
 "use client";
 import ProductCard from "./ProductCard";
-import type { Product, ProductCopy } from "./types/product.types";
+import type { Product, ProductCopy } from "../types/product.types";
 export default function ProductGrid({
   products,
   catalog,

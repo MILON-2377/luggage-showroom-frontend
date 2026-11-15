@@ -3,7 +3,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { useLanguage } from "@/src/providers";
 import ProductSort from "./ProductSort";
-import type { ProductSortValue } from "./types/product-query.types";
+import type { ProductSortValue } from "../types/product-query.types";
 export default function ProductToolbar({
   total,
   sort,
