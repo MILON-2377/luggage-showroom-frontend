@@ -2,7 +2,7 @@
 
 import { Button } from "@/src/components/ui/button";
 import { useLanguage } from "@/src/providers";
-import type { FaqCategory } from "./faq.types";
+import type { FaqCategory } from "../types/faq.types";
 
 export default function FaqCategoryTabs({
   categories,

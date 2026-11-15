@@ -3,7 +3,7 @@
 import { ArrowUpRight, Box, Layers3, Timer } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { useLanguage } from "@/src/providers";
-import type { FaqItem } from "./faq.types";
+import type { FaqItem } from "../types/faq.types";
 
 export default function PopularQuestions({ items, onSelect }: { items: FaqItem[]; onSelect: (id: string) => void }) {
   const { t } = useLanguage();

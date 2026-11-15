@@ -8,7 +8,7 @@ import { Label } from "@/src/components/ui/lebel";
 import { useLanguage } from "@/src/providers";
 import AiChatMessage from "./AiChatMessage";
 import AiSuggestedQuestions from "./AiSuggestedQuestions";
-import type { ChatMessage } from "./faq.types";
+import type { ChatMessage } from "../types/faq.types";
 
 export default function AiChatPanel({ onClose }: { onClose: () => void }) {
   const { t, locale } = useLanguage(); const c = t.faq.ai;

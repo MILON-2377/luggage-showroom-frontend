@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type PointerEvent } from "react";
+import {  type PointerEvent } from "react";
 import {
   motion,
   useMotionValue,

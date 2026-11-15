@@ -2,7 +2,7 @@
 
 import { Bot, UserRound } from "lucide-react";
 import { useLanguage } from "@/src/providers";
-import type { ChatMessage } from "./faq.types";
+import type { ChatMessage } from "../types/faq.types";
 
 export default function AiChatMessage({ message }: { message: ChatMessage }) {
   const { t } = useLanguage();

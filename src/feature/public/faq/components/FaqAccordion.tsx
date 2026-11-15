@@ -4,7 +4,7 @@ import { useId } from "react";
 import { Plus, SearchX } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { useLanguage } from "@/src/providers";
-import type { FaqItem } from "./faq.types";
+import type { FaqItem } from "../types/faq.types";
 
 export default function FaqAccordion({
   items,
