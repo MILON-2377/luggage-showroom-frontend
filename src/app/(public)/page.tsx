@@ -14,7 +14,13 @@ export default function HomePage() {
   return (
     <main className="w-full bg-background">
       <HeroBanner />
+<<<<<<< Updated upstream
       <LanguageSwitcher />
+=======
+
+      
+
+>>>>>>> Stashed changes
       <FeaturedProducts />
       <TrustStrip />
       <CustomizationSection />

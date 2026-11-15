@@ -1079,6 +1079,7 @@ whyPartner: {
     },
   },
 
+<<<<<<< Updated upstream
   aboutUs: {
     purpose: {
       "eyebrow": "PEOPLE, PURPOSE & CRAFT",
@@ -1404,6 +1405,9 @@ whyPartner: {
       "requestProfiles": "Ask for our official channels"
     }
   },
+=======
+  
+>>>>>>> Stashed changes
 
 };
 
