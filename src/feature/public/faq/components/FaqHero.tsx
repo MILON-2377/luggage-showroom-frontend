@@ -19,6 +19,7 @@ import {
 
 import { Button } from "@/src/components/ui/button";
 import { useLanguage } from "@/src/providers";
+import FaqRobot from "./FaqRobot";
 
 interface FaqHeroProps {
   onAsk: () => void;
@@ -188,101 +189,22 @@ export default function FaqHero({ onAsk }: FaqHeroProps) {
               />
 
               {/* 3D scene */}
-              <div
-                aria-hidden="true"
-                className="relative flex h-[320px] items-center justify-center [perspective:800px] sm:h-[360px]"
-              >
-                {/* Ambient light */}
-                <div className="pointer-events-none absolute size-56 rounded-full bg-accent/15 blur-3xl" />
+                            {/* Interactive 3D robot */}
+              <FaqRobot />
 
-                {/* Rear orbit */}
-                <div className="pointer-events-none absolute size-[250px] rounded-full border border-accent/25 [transform:rotateX(65deg)_rotateZ(-25deg)] sm:size-[290px]" />
+              {/* Existing translated content */}
+              <div className="relative border-t border-primary-foreground/15 pb-2 pt-6">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-accent">
+                  {c.visualEyebrow}
+                </p>
 
-                {/* Upright orbit */}
-                <div className="pointer-events-none absolute size-[250px] rounded-full border border-accent/15 [transform:rotateY(65deg)_rotateZ(25deg)] sm:size-[290px]" />
+                <p className="mt-3 font-serif text-2xl leading-snug">
+                  {c.visualTitle}
+                </p>
 
-                {/* Floating assembly */}
-                <motion.div
-                  animate={
-                    reducedMotion
-                      ? { y: 0 }
-                      : { y: [-8, 8, -8] }
-                  }
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="relative z-10 -mt-7 size-32 [transform-style:preserve-3d]"
-                >
-                  {/* All six faces form an actual CSS 3D cube */}
-                  <motion.div
-                    animate={{
-                      rotateX: -20,
-                      rotateY: reducedMotion
-                        ? -30
-                        : [-30, 330],
-                      rotateZ: -7,
-                    }}
-                    transition={{
-                      rotateY: {
-                        duration: 24,
-                        repeat: Infinity,
-                        ease: "linear",
-                      },
-                    }}
-                    className="relative size-32 [transform-style:preserve-3d]"
-                  >
-                    {cubeFaces.map(({ Icon, transform }, index) => (
-                      <div
-                        key={index}
-                        style={{ transform }}
-                        className="absolute inset-0 flex items-center justify-center rounded-xl border border-accent/70 bg-[#24221e] shadow-[inset_0_0_28px_rgba(165,139,101,0.14)] [backface-visibility:hidden]"
-                      >
-                        {/* Metallic lighting */}
-                        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/35 via-transparent to-black/30" />
-
-                        {/* Inset face detail */}
-                        <div className="absolute inset-3 rounded-lg border border-accent/25" />
-
-                        <Icon
-                          className="relative size-12 text-accent"
-                          strokeWidth={1.1}
-                        />
-
-                        {/* Corner studs */}
-                        <span className="absolute left-2 top-2 size-1 rounded-full bg-accent/70" />
-                        <span className="absolute right-2 bottom-2 size-1 rounded-full bg-accent/70" />
-                      </div>
-                    ))}
-                  </motion.div>
-                </motion.div>
-
-                {/* Floor shadow */}
-                <motion.div
-                  animate={
-                    reducedMotion
-                      ? { scale: 1, opacity: 0.5 }
-                      : {
-                          scale: [0.85, 1.1, 0.85],
-                          opacity: [0.35, 0.65, 0.35],
-                        }
-                  }
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="absolute bottom-12 h-8 w-36 rounded-[50%] bg-black/80 blur-lg"
-                />
-
-                {/* Pedestal thickness */}
-                <div className="absolute bottom-7 h-9 w-52 rounded-[50%] border border-accent/20 bg-[#161512]" />
-
-                {/* Pedestal top */}
-                <div className="absolute bottom-10 h-12 w-52 rounded-[50%] border border-accent/50 bg-gradient-to-b from-accent/20 to-primary shadow-[0_0_25px_rgba(165,139,101,0.1)]">
-                  <div className="absolute inset-2 rounded-[50%] border border-accent/20" />
-                </div>
+                <p className="mt-3 text-xs leading-6 text-primary-foreground/60">
+                  {c.visualDescription}
+                </p>
               </div>
 
               {/* Existing translated content */}
