@@ -8,12 +8,13 @@ import QualityAssuranceTesting from "@/src/feature/public/home/components/Qualit
 import ClientReviews from "@/src/feature/public/home/components/Reviews";
 import TrustStrip from "@/src/feature/public/home/components/TrustStrip";
 import ContactUsPage from "./contact-us/page";
+import LanguageSwitcher from "@/src/feature/common/components/LanguageSwitcher";
 
 export default function HomePage() {
   return (
     <main className="w-full bg-background">
       <HeroBanner />
-      
+      <LanguageSwitcher />
       <FeaturedProducts />
       <TrustStrip />
       <CustomizationSection />
