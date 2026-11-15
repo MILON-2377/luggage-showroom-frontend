@@ -23,7 +23,7 @@ export const publicNavigation: NavigationItem[] = [
   },
   {
     label: "About Us",
-    href: "/about",
+    href: "/about-us",
   },
   {
     label: "Contact",
