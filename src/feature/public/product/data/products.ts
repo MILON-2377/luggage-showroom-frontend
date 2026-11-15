@@ -66,13 +66,7 @@ export const draftProducts: Product[] = [
   "customization": [],
   "images": []
 },
-{
-  "id": "collection-bra",
-  "category": "bra",
-  "materials": [],
-  "customization": [],
-  "images": []
-},
+
 {
   "id": "collection-travel",
   "category": "travel",
@@ -80,48 +74,8 @@ export const draftProducts: Product[] = [
   "customization": [],
   "images": []
 },
-{
-  "id": "collection-cable",
-  "category": "cable",
-  "materials": [],
-  "customization": [],
-  "images": []
-},
-{
-  "id": "collection-headphone",
-  "category": "headphone",
-  "materials": [],
-  "customization": [],
-  "images": []
-},
-{
-  "id": "collection-camera",
-  "category": "camera",
-  "materials": [],
-  "customization": [],
-  "images": []
-},
-{
-  "id": "collection-gaming",
-  "category": "gaming",
-  "materials": [],
-  "customization": [],
-  "images": []
-},
-{
-  "id": "collection-eyewear",
-  "category": "eyewear",
-  "materials": [],
-  "customization": [],
-  "images": []
-},
-{
-  "id": "collection-jewelry",
-  "category": "jewelry",
-  "materials": [],
-  "customization": [],
-  "images": []
-},
+
+
 {
   "id": "collection-tools",
   "category": "tools",

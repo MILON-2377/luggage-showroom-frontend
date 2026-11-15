@@ -6,7 +6,7 @@ import useProductQuery from "./hooks/useProductQuery";
 import ProductHero from "./ProductHero";
 import ProductToolbar from "./ProductToolbar";
 import ProductGrid from "./ProductGrid";
-import ProductQuickView from "./ProductQuickView";
+import { getProductSlug } from "../data/product-details";
 import ProductPagination from "./ProductPagination";
 import ProductGridSkeleton from "./ProductGridSkeleton";
 import ProductEmptyState from "./ProductEmptyState";
@@ -33,7 +33,6 @@ export default function ProductSection({
   const catalog: Record<string, ProductCopy> = c.catalog;
   const router = useRouter();
   const { query, update, clear, ready } = useProductQuery();
-  const [selected, setSelected] = useState<Product | null>(null);
   const [drawer, setDrawer] = useState(false);
   const grid = useRef<HTMLDivElement>(null);
   const filtered = products.filter((product) => {
@@ -115,7 +114,7 @@ export default function ProductSection({
               <ProductGrid
                 products={visible}
                 catalog={catalog}
-                onOpen={setSelected}
+                onOpen={(product) => router.push("/product/" + getProductSlug(product))}
                 onInquire={inquire}
               />
             )}
@@ -137,12 +136,6 @@ export default function ProductSection({
         </div>
       </section>
       <ProductInquiryCta />
-      <ProductQuickView
-        product={selected}
-        copy={selected ? catalog[selected.id] : undefined}
-        onClose={() => setSelected(null)}
-        onInquire={inquire}
-      />
       <MobileFilterDrawer
         open={drawer}
         onClose={() => setDrawer(false)}
