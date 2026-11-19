@@ -1,363 +1,146 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import type { Swiper as SwiperType } from "swiper";
+import { motion, useSpring } from "motion/react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Layers3, LoaderCircle, Pause, Play, Sparkles } from "lucide-react";
+import { Button, buttonVariants } from "@/src/components/ui/button";
+import { cn } from "@/src/lib/utils";
+import { useLanguage } from "@/src/providers";
 
-const ProductEngineeringSwiper = dynamic(
-  () => import("./ProductEngineeringSwiper"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="absolute inset-0 z-20 flex items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-      </div>
-    ),
-  }
-);
+const ProductEngineeringSwiper = dynamic(() => import("./ProductEngineeringSwiper"), {
+  ssr: false,
+  loading: () => <div aria-hidden="true" className="absolute inset-0 z-20 flex items-center justify-center"><LoaderCircle className="size-8 text-accent motion-safe:animate-spin" /></div>,
+});
 
-// Bag category information
-const bagCategories = [
-  {
-    key: "suitcase",
-    name: "Suitcase",
-    image: "/1.png",
-    alt: "Premium suitcase",
-    title: "Premium Suitcase Manufacturing",
-    description:
-      "We manufacture premium suitcases combining durability, lightweight construction, modern aesthetics, and practical functionality. Every detail is carefully engineered to deliver reliable travel performance.",
-    details: [
-      "ABS, PC and PP materials",
-      "Advanced trolley systems",
-      "Smooth 360° spinner wheels",
-      "Custom colors and branding",
-    ],
-  },
-  {
-    key: "business-luggage",
-    name: "Business Luggage",
-    image: "/2.png",
-    alt: "Business luggage",
-    title: "Professional Business Luggage",
-    description:
-      "Designed for modern professionals, our business luggage combines elegant styling with smart organization, protective compartments, and dependable construction for business travel.",
-    details: [
-      "Professional exterior design",
-      "Laptop and document compartments",
-      "Organized storage solutions",
-      "Custom branding options",
-    ],
-  },
-  {
-    key: "backpack",
-    name: "Backpack",
-    image: "/3.png",
-    alt: "Modern backpack",
-    title: "Functional Backpack Development",
-    description:
-      "From everyday backpacks to specialized designs, we develop comfortable, practical and stylish products with carefully selected materials and reliable construction.",
-    details: [
-      "Ergonomic shoulder straps",
-      "Multiple storage compartments",
-      "Water-resistant fabric options",
-      "Custom sizes and designs",
-    ],
-  },
-  {
-    key: "duffel-bag",
-    name: "Duffel Bag",
-    image: "/4.png",
-    alt: "Travel duffel bag",
-    title: "Versatile Duffel Bag Production",
-    description:
-      "Our duffel bags are designed for travel, sports and everyday use. We focus on spacious storage, durable fabrics, comfortable carrying systems and contemporary styling.",
-    details: [
-      "Durable fabric construction",
-      "Spacious storage capacity",
-      "Reinforced handles and straps",
-      "Custom material selection",
-    ],
-  },
-  {
-    key: "handbag",
-    name: "Handbag",
-    image: "/5.png",
-    alt: "Fashion handbag",
-    title: "Fashion Handbag Manufacturing",
-    description:
-      "We create fashionable handbags that balance visual appeal, quality materials and functional design. Our manufacturing capabilities support different styles and customization requirements.",
-    details: [
-      "Premium material selection",
-      "Fashion-focused designs",
-      "Quality hardware and finishing",
-      "Private label customization",
-    ],
-  },
-];
+const productImages: Record<string, string> = {
+  suitcase: "/1.png",
+  "business-luggage": "/2.png",
+  backpack: "/3.png",
+  "duffel-bag": "/4.png",
+  handbag: "/5.png",
+};
 
 export default function ProductEngineering() {
+  const { t } = useLanguage();
+  const c = t.productEngineering;
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
-
+  const [paused, setPaused] = useState(false);
   const swiperRef = useRef<SwiperType | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
-
-  const selectedBag = bagCategories[selectedIndex];
-
-  // Observe section visibility for entrance animation
+  const [reduceMotion, setReduceMotion] = useState(false);
   useEffect(() => {
-    const section = sectionRef.current;
-
-    if (!section) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(section);
-        }
-      },
-      {
-        threshold: 0.15,
-      }
-    );
-
-    observer.observe(section);
-
-    return () => observer.disconnect();
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduceMotion(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
   }, []);
+  const rotateX = useSpring(3, { stiffness: 115, damping: 24 });
+  const rotateY = useSpring(-5, { stiffness: 115, damping: 24 });
 
-  // Previous slide
-  const handlePrevious = () => {
-    swiperRef.current?.slidePrev(900);
-  };
+  const bagCategories = c.categories.map(category => ({ ...category, image: productImages[category.key] }));
+  const index = Math.min(selectedIndex, bagCategories.length - 1);
+  const selectedBag = bagCategories[index];
 
-  // Next slide
-  const handleNext = () => {
-    swiperRef.current?.slideNext(900);
-  };
+  useEffect(() => {
+    let frame = 0;
+    function updateAutoplay() {
+      const swiper = swiperRef.current;
+      if (!swiper) { frame = requestAnimationFrame(updateAutoplay); return; }
+      if (paused || reduceMotion) swiper.autoplay?.stop();
+      else swiper.autoplay?.start();
+    }
+    updateAutoplay();
+    return () => cancelAnimationFrame(frame);
+  }, [paused, reduceMotion]);
 
-  // Select category
-  const handleCategoryChange = (index: number) => {
-    setSelectedIndex(index);
-    swiperRef.current?.slideToLoop(index, 900);
-  };
+  function handleCategoryChange(next: number) {
+    setSelectedIndex(next);
+    swiperRef.current?.slideToLoop(next, reduceMotion ? 0 : 900);
+  }
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative overflow-hidden bg-background py-20 md:py-28"
-    >
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
+    <section ref={sectionRef} id="product-engineering" className="relative isolate overflow-hidden bg-background px-5 py-20 text-primary md:px-8 md:py-28">
+      <div aria-hidden="true" className="pointer-events-none absolute -left-52 top-52 -z-10 size-[650px] rounded-full bg-accent/[0.07] blur-[100px]" />
 
-        {/* Section Heading */}
-        <div
-          className={`mx-auto mb-14 max-w-3xl text-center transition-all duration-1000 ${
-            isVisible
-              ? "translate-y-0 opacity-100"
-              : "translate-y-10 opacity-0"
-          }`}
-        >
-          <span className="mb-4 inline-block text-sm font-semibold uppercase tracking-[0.25em] text-accent">
-            Product Innovation & Engineering
-          </span>
+      <div className="mx-auto max-w-7xl">
+        <header className="mx-auto mb-14 max-w-3xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-accent/20 bg-surface/70 px-4 py-2 text-[10px] uppercase leading-5 tracking-[0.22em] text-accent shadow-[0_4px_12px_-8px_rgba(70,50,20,0.3)]"><Sparkles className="size-3.5" aria-hidden="true" />{c.eyebrow}</span>
+          <h2 className="mt-6 font-serif text-4xl font-normal leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">{c.title}<span className="mt-1 block italic text-accent">{c.highlight}</span></h2>
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 text-secondary sm:text-base">{c.description}</p>
+        </header>
 
-          <h2 className="text-3xl font-bold leading-tight text-primary md:text-5xl">
-            Engineering Bags for
-            <span className="text-accent"> Every Journey</span>
-          </h2>
-
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-secondary md:text-lg">
-            From concept development to final production, we combine
-            innovative design, material expertise and advanced manufacturing
-            to create products that meet modern market demands.
-          </p>
-        </div>
-
-        {/* Main Content */}
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-
-          {/* Left: Product Image Slider */}
-          <div
-            className={`transition-all duration-1000 ${
-              isVisible
-                ? "translate-x-0 opacity-100"
-                : "-translate-x-10 opacity-0"
-            }`}
-          >
-            <div className="relative">
-
-              {/* Decorative Background */}
-              <div className="absolute -inset-4 rounded-[2rem] bg-surface-muted opacity-70 blur-2xl" />
-
-              <div className="relative h-[420px] overflow-hidden rounded-3xl border border-border bg-surface md:h-[520px]">
-
-                {/* Decorative Circles */}
-                <div className="pointer-events-none absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-border md:h-[390px] md:w-[390px]" />
-
-                <div className="pointer-events-none absolute left-1/2 top-1/2 h-[220px] w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-border md:h-[290px] md:w-[290px]" />
-
-                {/* Swiper Component */}
-                <ProductEngineeringSwiper
-                  bagCategories={bagCategories}
-                  swiperRef={swiperRef}
-                  setSelectedIndex={setSelectedIndex}
-                />
-
-                {/* Image Counter */}
-                <div className="absolute bottom-5 left-5 z-30 rounded-full border border-border bg-background/90 px-4 py-2 text-sm font-semibold text-primary backdrop-blur-md">
-                  {String(selectedIndex + 1).padStart(2, "0")}
-                  <span className="mx-2 text-secondary">/</span>
-                  {String(bagCategories.length).padStart(2, "0")}
+          <div className="min-w-0 [perspective:1200px]">
+            <div className="relative px-1 pt-1 pb-4">
+              <div aria-hidden="true" className="absolute inset-1 translate-x-2 translate-y-3 rounded-t-[150px] rounded-b-[30px] bg-accent/30" />
+              <motion.div
+                style={{ rotateX: reduceMotion ? 0 : rotateX, rotateY: reduceMotion ? 0 : rotateY }}
+                onPointerMove={event => {
+                  if (reduceMotion || event.pointerType !== "mouse" || event.buttons) return;
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  rotateX.set(3 - ((event.clientY - rect.top) / rect.height - 0.5) * 8);
+                  rotateY.set(-5 + ((event.clientX - rect.left) / rect.width - 0.5) * 10);
+                }}
+                onPointerLeave={() => { rotateX.set(3); rotateY.set(-5); }}
+                onPointerCancel={() => { rotateX.set(3); rotateY.set(-5); }}
+                className="relative h-[450px] rounded-t-[150px] rounded-b-[30px] border border-accent/35 bg-[#1c1a17] shadow-[0_35px_60px_-25px_rgba(35,25,15,0.5),inset_0_1px_0_rgba(255,255,255,0.15)] sm:h-[540px]"
+              >
+                <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-t-[150px] rounded-b-[30px] bg-[radial-gradient(ellipse_at_28%_12%,rgba(193,157,96,0.27),transparent_65%)]">
+                  <div className="absolute left-1/2 top-[42%] size-[320px] rounded-full border border-[#d6b776]/25 [transform:translate(-50%,-50%)_rotateY(-25deg)]" />
+                  <div className="absolute left-1/2 top-[42%] size-[260px] rounded-full border border-[#d6b776]/20 [transform:translate(-50%,-50%)_rotateX(60deg)]" />
                 </div>
 
-                {/* Navigation Arrows */}
-                <div className="absolute bottom-4 right-5 z-30 flex gap-2">
-                  <button
-                    type="button"
-                    onClick={handlePrevious}
-                    aria-label="Previous bag category"
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background text-primary transition-all duration-300 hover:border-accent hover:bg-accent hover:text-white"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      className="h-5 w-5"
-                    >
-                      <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                  </button>
+                <div className="pointer-events-none absolute inset-x-8 top-8 z-30 flex items-center justify-between gap-3 text-[8px] uppercase tracking-[0.18em] text-[#c4aa7b]"><span>{c.stageLabel}</span><Layers3 className="size-4" strokeWidth={1.2} aria-hidden="true" /></div>
 
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    aria-label="Next bag category"
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background text-primary transition-all duration-300 hover:border-accent hover:bg-accent hover:text-white"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      className="h-5 w-5"
-                    >
-                      <path d="M9 18l6-6-6-6" />
-                    </svg>
-                  </button>
+                {/* Existing Swiper retained; its cards receive dimensional styling here. */}
+                <div className="absolute inset-x-0 top-14 bottom-[95px] [&_.swiper-wrapper]:items-center [&_.swiper-slide>div]:rounded-t-[120px] [&_.swiper-slide>div]:rounded-b-[24px] [&_.swiper-slide>div]:border-accent/25 [&_.swiper-slide>div]:bg-[radial-gradient(ellipse_at_30%_10%,#fffdf7,#eee7db_80%)] [&_.swiper-slide>div]:shadow-[8px_16px_25px_rgba(0,0,0,0.3),inset_0_1px_0_white] [&_.swiper-slide_img]:drop-shadow-[0_18px_10px_rgba(0,0,0,0.25)]">
+                  <ProductEngineeringSwiper bagCategories={bagCategories} swiperRef={swiperRef} setSelectedIndex={setSelectedIndex} />
                 </div>
-              </div>
+
+                <div aria-hidden="true" className="pointer-events-none absolute bottom-[83px] left-1/2 h-7 w-[60%] -translate-x-1/2 rounded-[50%] border border-[#c6a775]/55 bg-[#141310] shadow-[0_10px_0_#090908,0_20px_20px_rgba(0,0,0,0.3)]" />
+
+                <div className="absolute inset-x-6 bottom-5 z-30 flex items-center justify-between gap-3 border-t border-white/10 pt-4">
+                  <div className="text-xs tabular-nums text-[#e4d4b9]">{String(index + 1).padStart(2, "0")}<span className="mx-2 text-[#8a7a60]">/</span>{String(bagCategories.length).padStart(2, "0")}</div>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="icon" aria-label={paused || reduceMotion ? c.resume : c.pause} aria-pressed={paused || Boolean(reduceMotion)} disabled={Boolean(reduceMotion)} onClick={() => setPaused(value => !value)} className="rounded-full border border-[#b69c6e]/30 bg-white/5 text-[#e2cda5] hover:bg-white/10 hover:text-white">{paused || reduceMotion ? <Play className="size-4" aria-hidden="true" /> : <Pause className="size-4" aria-hidden="true" />}</Button>
+                    <Button variant="ghost" size="icon" aria-label={c.previous} onClick={() => swiperRef.current?.slidePrev(reduceMotion ? 0 : 900)} className="rounded-full border border-[#b69c6e]/30 bg-white/5 text-[#e2cda5] hover:bg-white/10 hover:text-white"><ChevronLeft className="size-4" aria-hidden="true" /></Button>
+                    <Button variant="ghost" size="icon" aria-label={c.next} onClick={() => swiperRef.current?.slideNext(reduceMotion ? 0 : 900)} className="rounded-full border border-[#b69c6e]/30 bg-white/5 text-[#e2cda5] hover:bg-white/10 hover:text-white"><ChevronRight className="size-4" aria-hidden="true" /></Button>
+                  </div>
+                </div>
+              </motion.div>
             </div>
 
-            {/* Category Indicators */}
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              {bagCategories.map((bag, index) => (
-                <button
-                  key={bag.key}
-                  type="button"
-                  onClick={() => handleCategoryChange(index)}
-                  className={`rounded-full px-4 py-2 text-xs font-semibold transition-all duration-300 md:text-sm ${
-                    selectedIndex === index
-                      ? "bg-primary text-white shadow-lg"
-                      : "border border-border bg-surface text-secondary hover:border-accent hover:text-accent"
-                  }`}
-                >
-                  {bag.name}
-                </button>
-              ))}
+            <div role="group" aria-label={c.categoryLabel} className="mt-6 flex flex-wrap justify-center gap-2">
+              {bagCategories.map((bag, next) => <Button key={bag.key} variant={index === next ? "default" : "outline"} size="sm" aria-pressed={index === next} onClick={() => handleCategoryChange(next)} className={cn("h-auto min-h-9 max-w-full whitespace-normal rounded-full px-4 py-2 text-[11px] leading-5", index === next && "shadow-[0_4px_0_rgba(165,139,101,0.35)]")}>{bag.name}</Button>)}
             </div>
           </div>
 
-          {/* Right: Category Details */}
-          <div
-            className={`transition-all duration-1000 ${
-              isVisible
-                ? "translate-x-0 opacity-100"
-                : "translate-x-10 opacity-0"
-            }`}
-          >
-            <div
-              key={selectedBag.key}
-              className="animate-[categoryChange_0.5s_ease]"
-            >
-              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-xs font-semibold uppercase tracking-wider text-accent">
-                <span className="h-2 w-2 rounded-full bg-accent" />
-                {selectedBag.name}
-              </span>
-
-              <h3 className="mt-6 text-3xl font-bold leading-tight text-primary md:text-4xl">
-                {selectedBag.title}
-              </h3>
-
-              <p className="mt-6 text-base leading-8 text-secondary">
-                {selectedBag.description}
-              </p>
-
-              {/* Product Details */}
-              <div className="mt-8">
-                <h4 className="mb-5 text-sm font-bold uppercase tracking-wider text-primary">
-                  Engineering Highlights
-                </h4>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {selectedBag.details.map((detail, index) => (
-                    <div
-                      key={detail}
-                      className="flex items-start gap-3 rounded-xl border border-border bg-surface p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
-                    >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent/10 text-xs font-bold text-accent">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-
-                      <span className="text-sm leading-6 text-primary">
-                        {detail}
-                      </span>
+          <div className="min-w-0">
+            <span className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-surface px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-accent"><span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />{selectedBag.name}</span>
+            <motion.div key={selectedBag.key} initial={false} animate={{ opacity: 1, y: 0 }}>
+              <h3 className="mt-6 font-serif text-3xl font-normal leading-tight tracking-tight sm:text-4xl">{selectedBag.title}</h3>
+              <p className="mt-5 text-sm leading-8 text-secondary">{selectedBag.description}</p>
+              <div className="mt-8 border-t border-accent/20 pt-6">
+                <h4 className="mb-5 text-[10px] uppercase tracking-[0.2em] text-accent">{c.highlights}</h4>
+                <div className="grid auto-rows-fr gap-4 sm:grid-cols-2">
+                  {selectedBag.details.map((detail, number) => <div key={detail} className="group relative h-full [perspective:800px]">
+                    <div aria-hidden="true" className="absolute inset-0 translate-x-1 translate-y-1 rounded-2xl bg-accent/15" />
+                    <div className="relative flex h-full items-start gap-3 rounded-2xl border border-accent/20 bg-surface p-4 shadow-[0_12px_20px_-16px_rgba(70,50,20,0.35),inset_0_1px_0_white] transition-transform duration-300 motion-safe:group-hover:-translate-y-1 motion-reduce:transition-none">
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-[#e4cea2] bg-[linear-gradient(135deg,#f5e7c7,#c4a16a)] font-serif text-xs text-[#604b2a] shadow-[2px_3px_0_#9c804f]">{String(number + 1).padStart(2, "0")}</span>
+                      <span className="pt-1 text-xs leading-6">{detail}</span>
                     </div>
-                  ))}
+                  </div>)}
                 </div>
               </div>
-
-              {/* CTA */}
-              <div className="mt-9 flex flex-wrap items-center gap-4">
-                <Link
-                  href="/engineering"
-                  className="inline-flex items-center gap-3 rounded-full bg-primary px-7 py-4 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-accent hover:shadow-xl"
-                >
-                  Explore Our Engineering
-
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="h-4 w-4"
-                  >
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
-            </div>
+              <Link href="/engineering" className={cn(buttonVariants({variant:"default"}),"mt-9 h-auto min-h-12 max-w-full justify-between gap-6 whitespace-normal rounded-xl px-6 py-4 text-left text-xs leading-5 shadow-[0_5px_0_rgba(165,139,101,0.3)]")}>{c.cta}<ArrowUpRight className="size-4 shrink-0" aria-hidden="true" /></Link>
+            </motion.div>
           </div>
         </div>
       </div>
-
-      {/* Category Change Animation */}
-      <style jsx>{`
-        @keyframes categoryChange {
-          from {
-            opacity: 0;
-            transform: translateY(12px);
-          }
-
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </section>
   );
 }

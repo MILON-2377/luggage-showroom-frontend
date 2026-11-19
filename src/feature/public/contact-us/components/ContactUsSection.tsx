@@ -1,12 +1,789 @@
 
 
+// "use client";
+
+// import { useEffect, useRef, useState, type FormEvent } from "react";
+// import Link from "next/link";
+// import { motion, useSpring, useReducedMotion } from "motion/react";
+// import { useLanguage } from "@/src/providers";
+// import { Button, buttonVariants } from "@/src/components/ui/button";
+// import { Input } from "@/src/components/ui/input";
+// import { cn } from "@/src/lib/utils";
+// import { Mail, Phone, MessageCircle, MapPin, Clock3, ArrowUpRight, Check, ArrowDown } from "lucide-react";
+
+// const contact = {
+//   whatsapp: "",
+//   factoryAddress: "",
+//   factoryMapQuery: "",
+//   businessHours: "",
+//   responseTime: "",
+//   socialProfiles: [] as {
+//     name: string;
+//     url: string;
+//   }[],
+// };
+
+// type IconKind =
+//   | "email"
+//   | "phone"
+//   | "chat"
+//   | "pin"
+//   | "clock"
+//   | "arrow";
+
+// function Icon({ kind }: { kind: IconKind }) {
+//   const icons = { email: Mail, phone: Phone, chat: MessageCircle, pin: MapPin, clock: Clock3, arrow: ArrowUpRight };
+//   const Component = icons[kind];
+//   return <Component className="size-[22px] shrink-0" strokeWidth={1.3} aria-hidden="true" />;
+// }
+
+// function ContactOrbit() {
+//   const tiles = useRef<(HTMLDivElement | null)[]>([]);
+//   const ring = useRef<HTMLDivElement>(null);
+
+//   useEffect(() => {
+//     const parent = ring.current?.parentElement;
+//     if (!parent) return;
+//     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+//     let radius = 120;
+//     let angle = -Math.PI / 6;
+//     let previous = 0;
+//     let frame = 0;
+//     const inclination = (58 * Math.PI) / 180;
+
+//     function position() {
+//       tiles.current.forEach((tile, index) => {
+//         if (!tile) return;
+//         const phase = angle + index * (Math.PI * 2 / 3);
+//         const x = Math.cos(phase) * radius;
+//         const y = Math.sin(phase) * radius * Math.cos(inclination);
+//         const z = Math.sin(phase) * radius * Math.sin(inclination);
+//         tile.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, ${z}px) rotate(${Math.cos(phase) * 9}deg)`;
+//       });
+//     }
+
+//     function measure() {
+//       radius = Math.min(parent!.clientWidth * 0.44, 155);
+//       position();
+//     }
+
+//     function animate(time: number) {
+//       if (!document.hidden) {
+//         if (previous) angle += Math.min(time - previous, 50) / 18000 * Math.PI * 2;
+//         previous = time;
+//         position();
+//       } else previous = 0;
+//       frame = requestAnimationFrame(animate);
+//     }
+
+//     function updateMotion() {
+//       cancelAnimationFrame(frame);
+//       previous = 0;
+//       position();
+//       if (!media.matches) frame = requestAnimationFrame(animate);
+//     }
+
+//     const observer = new ResizeObserver(measure);
+//     observer.observe(parent);
+//     media.addEventListener("change", updateMotion);
+//     measure();
+//     updateMotion();
+//     return () => {
+//       cancelAnimationFrame(frame);
+//       observer.disconnect();
+//       media.removeEventListener("change", updateMotion);
+//     };
+//   }, []);
+
+//   return (
+//     <>
+//       <div ref={ring} className="pointer-events-none absolute left-1/2 top-[43%] aspect-square w-[88%] max-w-[310px] rounded-full border border-[#d8ba7d]/50 shadow-[0_0_18px_rgba(210,175,110,0.08)] [transform:translate(-50%,-50%)_rotateX(58deg)]" />
+//       {[Mail, Phone, MapPin].map((ContactIcon, index) => (
+//         <div
+//           key={index}
+//           ref={node => { tiles.current[index] = node; }}
+//           data-contact-orbit={index}
+//           style={{ transform: `translate(-50%, -50%) translate3d(${Math.cos(-Math.PI / 6 + index * Math.PI * 2 / 3) * 120}px, ${Math.sin(-Math.PI / 6 + index * Math.PI * 2 / 3) * 64}px, ${Math.sin(-Math.PI / 6 + index * Math.PI * 2 / 3) * 102}px)` }}
+//           className="pointer-events-none absolute left-1/2 top-[43%] flex size-12 items-center justify-center rounded-2xl border border-[#d5bb84]/60 bg-[linear-gradient(135deg,#eee0bd,#b6975f_55%,#806239)] text-[#47351f] shadow-[5px_9px_14px_rgba(0,0,0,0.4),inset_1px_1px_2px_rgba(255,255,255,0.7),inset_-2px_-2px_3px_rgba(70,45,15,0.2)] will-change-transform"
+//         >
+//           <ContactIcon className="size-5" strokeWidth={1.4} aria-hidden="true" />
+//         </div>
+//       ))}
+//     </>
+//   );
+// }
+
+
+// export default function ContactUsSection() {
+//   const { t, locale } = useLanguage();
+
+//   const data = t.contactUs;
+//   const business = t.finalCta.contactInfo;
+
+//   const [mapLoaded, setMapLoaded] = useState(false);
+//   const [draftPrepared, setDraftPrepared] = useState(false);
+//   const [copied, setCopied] = useState(false);
+//   const reduceMotion = useReducedMotion();
+//   const artRotateX = useSpring(10, { stiffness: 110, damping: 22 });
+//   const artRotateY = useSpring(-14, { stiffness: 110, damping: 22 });
+
+//   const phoneHref = business.phonePrimary
+//     .replace(/^\+86\s*\(0(\d+)\)/, "+86$1")
+//     .replace(/\(0\)/g, "")
+//     .replace(/[^+\d]/g, "");
+
+//   const hasFactoryLocation = Boolean(
+//     contact.factoryMapQuery || contact.factoryAddress
+//   );
+
+//   const mapQuery =
+//     contact.factoryMapQuery ||
+//     contact.factoryAddress ||
+//     business.address;
+
+//   async function copyEmail() {
+//     try {
+//       await navigator.clipboard.writeText(business.email);
+//       setCopied(true);
+//     } catch {
+//       setCopied(false);
+//     }
+//   }
+
+//   function prepareEmail(event: FormEvent<HTMLFormElement>) {
+//     event.preventDefault();
+
+//     const fields = new FormData(event.currentTarget);
+//     const labels = data.form.emailBodyLabels;
+
+//     const subject =
+//       `[${data.form.emailSubjectPrefix}] ` +
+//       `${fields.get("subject")} — ` +
+//       `${fields.get("company") || fields.get("name")}`;
+
+//     const body = [
+//       `${labels.name}: ${fields.get("name")}`,
+//       `${labels.company}: ${fields.get("company") || "—"}`,
+//       `${labels.email}: ${fields.get("email")}`,
+//       `${labels.telephone}: ${fields.get("phone") || "—"}`,
+//       `${labels.country}: ${fields.get("country") || "—"}`,
+//       "",
+//       String(fields.get("message") || ""),
+//     ].join("\n");
+
+//     window.location.href =
+//       `mailto:${business.email}` +
+//       `?subject=${encodeURIComponent(subject)}` +
+//       `&body=${encodeURIComponent(body)}`;
+
+//     setDraftPrepared(true);
+//   }
+
+//   return (
+//     <div
+//       className="bg-background text-primary [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-accent [&_a]:focus-visible:outline-offset-4 motion-reduce:[&_*]:transition-none [&:lang(zh-CN)_h1]:text-[clamp(36px,4.3vw,59px)] [&:lang(zh-CN)_h1]:leading-[1.35] [&:lang(zh-CN)_h1]:tracking-[0.01em] [&:lang(zh-CN)_em]:not-italic [&:lang(zh-CN)_h2]:leading-[1.4] [&:lang(zh-CN)_h3]:leading-[1.5]"
+//       lang={locale === "zh" ? "zh-CN" : "en"}
+//     >
+//       {/* 01. Contact introduction */}
+//       <section
+//         className="relative overflow-hidden border-b border-border bg-[radial-gradient(ellipse_at_90%_50%,#a58b6517,transparent_55%)]"
+//         aria-labelledby="contact-heading"
+//       >
+//         <div className="mx-auto max-w-[1280px] px-7 max-[720px]:px-5">
+//           <div className="flex gap-[14px] pt-[30px] text-[10px] text-secondary">
+//             <Link href="/">{data.home}</Link>
+//             <span>/</span>
+//             <span>{data.breadcrumb}</span>
+//           </div>
+
+//           <div className="grid grid-cols-[1.45fr_1fr] items-center gap-[60px] pt-[65px] pb-[70px] [&_h1]:my-[26px] [&_p]:mb-7 [&_p]:max-w-[490px] max-[1000px]:gap-[25px] max-[720px]:grid-cols-1 max-[720px]:gap-7 max-[720px]:pt-[42px] max-[720px]:pb-[38px]">
+//             <div>
+//               <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                 {data.introduction.eyebrow}
+//               </span>
+
+//               <h1 id="contact-heading" className="my-[26px] font-serif text-[clamp(44px,5.5vw,76px)] font-normal leading-[1.06] tracking-[-0.045em] max-[720px]:text-[49px]">
+//                 {data.introduction.title}
+//                 <br />
+//                 <em className="font-normal text-accent">{data.introduction.highlightedTitle}</em>
+//               </h1>
+
+//               <p className="text-[13px] leading-[1.9] text-secondary">{data.introduction.description}</p>
+
+//               <a
+//                 className={cn(buttonVariants({ variant: "default" }), "h-auto justify-between gap-10 rounded-none border border-primary bg-primary px-6 py-[17px] text-[11px] font-medium text-background")}
+//                 href="#general-enquiry"
+//               >
+//                 {data.introduction.button}
+//                 <ArrowUpRight className="size-3.5" aria-hidden="true" />
+//               </a>
+//             </div>
+
+//             <div
+//               aria-hidden="true"
+//               onPointerMove={(event) => {
+//                 if (reduceMotion || event.pointerType !== "mouse") return;
+//                 const rect = event.currentTarget.getBoundingClientRect();
+//                 artRotateX.set(10 - ((event.clientY - rect.top) / rect.height - 0.5) * 16);
+//                 artRotateY.set(-14 + ((event.clientX - rect.left) / rect.width - 0.5) * 24);
+//               }}
+//               onPointerLeave={() => { artRotateX.set(10); artRotateY.set(-14); }}
+//               onPointerCancel={() => { artRotateX.set(10); artRotateY.set(-14); }}
+//               className="relative mx-auto w-full max-w-[390px] justify-self-center [perspective:1100px] max-[720px]:max-w-[330px]"
+//             >
+//               <div className="absolute inset-0 translate-x-3 translate-y-4 rounded-t-[160px] rounded-b-[28px] bg-[#a58b65]/25" />
+//               <div className="relative overflow-hidden rounded-t-[160px] rounded-b-[28px] border border-[#b39a70]/35 bg-[#171717] shadow-[0_35px_65px_-25px_rgba(35,25,20,0.55),inset_0_1px_0_rgba(255,255,255,0.12)]">
+//                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_10%,rgba(185,153,102,0.27),transparent_65%)]" />
+//                 <div className="relative aspect-[1/1.05] [perspective:1000px]">
+//                   <motion.div
+//                     style={{ rotateX: artRotateX, rotateY: artRotateY }}
+//                     className="absolute inset-6 [transform-style:preserve-3d]"
+//                   >
+//                     <div className="absolute left-1/2 top-[43%] size-[260px] rounded-full border border-[#c7aa76]/20 [transform:translate(-50%,-50%)_rotateY(28deg)] max-[380px]:size-[220px]" />
+//                     <motion.div
+//                       animate={reduceMotion ? { y: 0 } : { y: [-6, 6, -6] }}
+//                       transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+//                       className="absolute left-1/2 top-[43%] size-[156px] -translate-x-1/2 -translate-y-1/2 [transform-style:preserve-3d]"
+//                     >
+//                       {/* Polished gold communication sphere */}
+//                       <div className="absolute inset-0 rounded-full border border-[#eed9a7]/40 bg-[radial-gradient(circle_at_28%_23%,#fff5d8_0%,#e0c68c_17%,#af8950_40%,#6b512e_67%,#242019_91%)] shadow-[inset_5px_5px_14px_rgba(255,245,210,0.25),inset_-12px_-14px_20px_rgba(20,15,8,0.5),12px_22px_30px_rgba(0,0,0,0.45)]" />
+//                       <div className="absolute left-5 top-5 h-7 w-12 -rotate-35 rounded-full bg-[#fff4cf]/60 blur-lg [transform:translateZ(25px)]" />
+//                       <div className="absolute inset-3 rounded-full border border-[#f6e6b5]/30 [transform:translateZ(18px)_rotateY(55deg)_rotateZ(-25deg)]" />
+//                       <div className="absolute inset-3 rounded-full border border-[#f6e6b5]/20 [transform:translateZ(15px)_rotateX(65deg)_rotateZ(-25deg)]" />
+
+//                       {/* Raised porcelain speech bubble and gold sidewall */}
+//                       <div className="absolute left-5 top-[49px] h-[66px] w-[100px] rounded-[23px] bg-[#9e8051] shadow-[6px_10px_14px_rgba(0,0,0,0.3)] [transform:translateZ(53px)_translate(5px,5px)_rotate(-9deg)]" />
+//                       <div className="absolute left-5 top-[49px] flex h-[66px] w-[100px] items-center justify-center gap-2 rounded-[23px] border border-white/90 bg-[linear-gradient(135deg,#fffdf3,#eee3cc)] shadow-[inset_2px_2px_3px_white,inset_-3px_-3px_6px_rgba(120,95,55,0.18)] [transform:translateZ(58px)_rotate(-9deg)]">
+//                         <span className="size-2.5 rounded-full bg-[#a48852] shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)]" />
+//                         <span className="size-2.5 rounded-full bg-[#a48852] shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)]" />
+//                         <span className="size-2.5 rounded-full bg-[#a48852] shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)]" />
+//                         <div className="absolute -bottom-2 left-5 size-5 rounded-br-[5px] bg-[#f1e7d1] [clip-path:polygon(0_0,100%_0,0_100%)]" />
+//                       </div>
+//                       <div className="absolute right-0 top-7 flex size-10 items-center justify-center rounded-full border border-[#f8e9c3] bg-[linear-gradient(135deg,#f3dfb0,#a57c3e)] text-[#5d4527] shadow-[3px_5px_8px_rgba(0,0,0,0.3),inset_0_1px_2px_white] [transform:translateZ(65px)]"><MessageCircle className="size-5" strokeWidth={1.3} /></div>
+//                     </motion.div>
+
+//                     <ContactOrbit />
+
+//                     <div className="absolute bottom-2 left-1/2 h-14 w-[220px] [transform:translateX(-50%)_translateZ(0px)]">
+//                       <div className="absolute inset-x-0 bottom-0 h-10 rounded-[50%] bg-[#080808] shadow-[0_12px_20px_rgba(0,0,0,0.45)]" />
+//                       <div className="absolute inset-x-0 top-0 h-10 rounded-[50%] border-2 border-[#bda06d] bg-[linear-gradient(145deg,#454034,#171714_65%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]" />
+//                     </div>
+//                   </motion.div>
+//                 </div>
+//                 <div className="relative mx-7 border-t border-white/10 pt-5 pb-7">
+//                   <span className="block text-[8px] tracking-[0.22em] text-[#bfa372]">{data.introduction.artLabel}</span>
+//                   <div className="mt-3 font-serif text-[27px] leading-[1.15] text-[#f1e8d8]">{data.introduction.artTitle}</div>
+//                   <span className="mt-4 block text-[7px] tracking-[0.15em] text-[#a99b85]">{data.introduction.artCaption}</span>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="flex justify-between border-t border-border py-5 text-[8px] tracking-[0.12em] text-secondary max-[720px]:gap-5 max-[720px]:text-[7px] max-[720px]:leading-[1.8]">
+//             <span>{data.introduction.footerText}</span>
+//             <a href="#contact-methods">
+//               {data.introduction.scrollText} <ArrowDown className="inline size-3" aria-hidden="true" />
+//             </a>
+//           </div>
+//         </div>
+//       </section>
+
+//       <div className="mx-auto max-w-[1280px] px-7 max-[720px]:px-5 pt-[75px] max-[720px]:pt-[45px]">
+//         {/* 02–04. Email, telephone and WhatsApp */}
+//         <section
+//           id="contact-methods"
+//           aria-labelledby="contact-methods-heading"
+//         >
+//           <div className="mb-[30px] flex items-end justify-between gap-[35px] [&>p]:mb-[6px] [&>p]:max-w-[340px] [&>p]:text-[11px] max-[720px]:block max-[720px]:[&>p]:mt-[15px]">
+//             <div>
+//               <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                 {data.contactMethods.eyebrow}
+//               </span>
+
+//               <h2 id="contact-methods-heading" className="my-3 font-serif text-[clamp(30px,3.2vw,43px)] font-normal leading-[1.2] tracking-[-0.03em]">
+//                 {data.contactMethods.title}
+//               </h2>
+//             </div>
+
+//             <p className="text-[13px] leading-[1.9] text-secondary">{data.contactMethods.description}</p>
+//           </div>
+
+//           <div className="grid grid-cols-3 gap-5 max-[1000px]:gap-3 max-[720px]:grid-cols-1">
+//             <article className="rounded-t-[60px] rounded-b-[6px] border border-border bg-surface px-6 py-[30px] shadow-[0_16px_30px_-22px_rgba(80,60,30,0.4)] transition-[transform,box-shadow] duration-300 motion-safe:hover:-translate-y-[5px] hover:shadow-[0_20px_36px_#17171708] [&>p]:mt-[13px] [&>p]:mb-5 [&>p]:min-h-11 [&>p]:text-[11px] max-[1000px]:px-[18px] max-[1000px]:py-7 max-[720px]:rounded-t-[40px] max-[720px]:rounded-b-[5px] max-[720px]:p-[25px] max-[720px]:[&>p]:min-h-0">
+//               <div className="mx-[6px] mt-[5px] mb-[30px] flex items-center justify-between text-accent [&_span]:font-serif [&_span]:text-[15px] [&_span]:italic max-[720px]:mb-5">
+//                 <Icon kind="email" />
+//                 <span>02</span>
+//               </div>
+
+//               <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                 {data.email.label}
+//               </span>
+
+//               <a
+//                 className="mt-[15px] block text-[clamp(12px,1.3vw,17px)] [overflow-wrap:anywhere] max-[720px]:text-[17px]"
+//                 href={`mailto:${business.email}`}
+//               >
+//                 {business.email}
+//               </a>
+
+//               <p className="text-[13px] leading-[1.9] text-secondary">{data.email.description}</p>
+
+//               <Button variant="link"
+//                 className="inline-flex h-auto items-center justify-start gap-1 rounded-none border-b border-[#a58b6555] bg-transparent p-0 pb-[5px] text-[10px] font-normal text-primary underline-offset-4"
+//                 onClick={copyEmail}
+//                 type="button"
+//                 aria-live="polite"
+//               >
+//                 {copied ? data.email.copied : data.email.copy}{copied ? <Check className="size-3" aria-hidden="true" /> : <ArrowUpRight className="size-3" aria-hidden="true" />}
+//               </Button>
+//             </article>
+
+//             <article className="rounded-t-[60px] rounded-b-[6px] border border-border bg-surface px-6 py-[30px] shadow-[0_16px_30px_-22px_rgba(80,60,30,0.4)] transition-[transform,box-shadow] duration-300 motion-safe:hover:-translate-y-[5px] hover:shadow-[0_20px_36px_#17171708] [&>p]:mt-[13px] [&>p]:mb-5 [&>p]:min-h-11 [&>p]:text-[11px] max-[1000px]:px-[18px] max-[1000px]:py-7 max-[720px]:rounded-t-[40px] max-[720px]:rounded-b-[5px] max-[720px]:p-[25px] max-[720px]:[&>p]:min-h-0">
+//               <div className="mx-[6px] mt-[5px] mb-[30px] flex items-center justify-between text-accent [&_span]:font-serif [&_span]:text-[15px] [&_span]:italic max-[720px]:mb-5">
+//                 <Icon kind="phone" />
+//                 <span>03</span>
+//               </div>
+
+//               <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                 {data.telephone.label}
+//               </span>
+
+//               <a
+//                 className="mt-[13px] block font-serif text-[22px] font-normal leading-[1.4]"
+//                 href={`tel:${phoneHref}`}
+//               >
+//                 {business.phonePrimary}
+//               </a>
+
+//               <p className="text-[13px] leading-[1.9] text-secondary">{data.telephone.description}</p>
+
+//               <a
+//                 className="inline-flex h-auto items-center justify-start gap-1 rounded-none border-b border-[#a58b6555] bg-transparent p-0 pb-[5px] text-[10px] font-normal text-primary underline-offset-4"
+//                 href={`tel:${phoneHref}`}
+//               >
+//                 {data.telephone.button} <ArrowUpRight className="inline size-3" aria-hidden="true" />
+//               </a>
+//             </article>
+
+//             <article className="rounded-t-[60px] rounded-b-[6px] border border-border bg-surface px-6 py-[30px] shadow-[0_16px_30px_-22px_rgba(80,60,30,0.4)] transition-[transform,box-shadow] duration-300 motion-safe:hover:-translate-y-[5px] hover:shadow-[0_20px_36px_#17171708] [&>p]:mt-[13px] [&>p]:mb-5 [&>p]:min-h-11 [&>p]:text-[11px] max-[1000px]:px-[18px] max-[1000px]:py-7 max-[720px]:rounded-t-[40px] max-[720px]:rounded-b-[5px] max-[720px]:p-[25px] max-[720px]:[&>p]:min-h-0">
+//               <div className="mx-[6px] mt-[5px] mb-[30px] flex items-center justify-between text-accent [&_span]:font-serif [&_span]:text-[15px] [&_span]:italic max-[720px]:mb-5">
+//                 <Icon kind="chat" />
+//                 <span>04</span>
+//               </div>
+
+//               <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                 {data.whatsapp.label}
+//               </span>
+
+//               <h3 className="mt-[13px] block font-serif text-[22px] font-normal leading-[1.4]">
+//                 {data.whatsapp.title}
+//               </h3>
+
+//               <p className="text-[13px] leading-[1.9] text-secondary">
+//                 {contact.whatsapp
+//                   ? `+${contact.whatsapp}`
+//                   : data.whatsapp.description}
+//               </p>
+
+//               <a
+//                 className="inline-flex h-auto items-center justify-start gap-1 rounded-none border-b border-[#a58b6555] bg-transparent p-0 pb-[5px] text-[10px] font-normal text-primary underline-offset-4"
+//                 href={
+//                   contact.whatsapp
+//                     ? `https://wa.me/${contact.whatsapp}`
+//                     : `mailto:${business.email}?subject=${encodeURIComponent(
+//                         data.whatsapp.request
+//                       )}`
+//                 }
+//                 {...(contact.whatsapp
+//                   ? {
+//                       target: "_blank",
+//                       rel: "noopener noreferrer",
+//                     }
+//                   : {})}
+//               >
+//                 {contact.whatsapp
+//                   ? data.whatsapp.open
+//                   : data.whatsapp.request}{" "}
+//                 <ArrowUpRight className="inline size-3" aria-hidden="true" />
+//               </a>
+//             </article>
+//           </div>
+//         </section>
+
+//         {/* 05–08. Addresses, hours and response time */}
+//         <section
+//           className="my-[65px] grid grid-cols-[1.1fr_1fr] gap-[70px] border-t border-border pt-10 [&_article+article]:border-t [&_article+article]:border-border [&_article+article]:pt-[30px] [&_p]:my-2.5 [&_p]:text-xs max-[1000px]:gap-[35px] max-[720px]:my-10 max-[720px]:grid-cols-1 max-[720px]:gap-[35px]"
+//           aria-label={data.locations.label}
+//         >
+//           <div className="grid gap-8">
+//             <article>
+//               <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                 {data.locations.headOffice.label}
+//               </span>
+
+//               <h3 className="my-3 font-serif text-2xl font-normal leading-[1.35]">{data.locations.headOffice.title}</h3>
+
+//               <address className="max-w-[460px] text-[13px] leading-[1.9] text-secondary not-italic">{business.address}</address>
+//             </article>
+
+//             <article>
+//               <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                 {data.locations.factory.label}
+//               </span>
+
+//               <h3 className="my-3 font-serif text-2xl font-normal leading-[1.35]">{data.locations.factory.title}</h3>
+
+//               <address className="max-w-[460px] text-[13px] leading-[1.9] text-secondary not-italic">
+//                 {contact.factoryAddress ||
+//                   data.locations.factory.pendingAddress}
+//               </address>
+//             </article>
+//           </div>
+
+//           <div className="grid gap-8 max-[720px]:border-t max-[720px]:border-border max-[720px]:pt-[30px]">
+//             <article>
+//               <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                 {data.businessHours.label}
+//               </span>
+
+//               <div className="mt-4 flex items-center gap-[15px] text-sm [&_b]:mt-[5px] [&_b]:block [&_b]:text-[10px] [&_b]:font-normal [&_b]:text-accent">
+//                 <Icon kind="clock" />
+//                 <span>
+//                   {data.businessHours.timeZone}
+//                   <b>{data.businessHours.utcOffset}</b>
+//                 </span>
+//               </div>
+
+//               <p className="text-[13px] leading-[1.9] text-secondary">
+//                 {contact.businessHours ||
+//                   data.businessHours.pendingHours}
+//               </p>
+//             </article>
+
+//             <article>
+//               <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                 {data.responseTime.label}
+//               </span>
+
+//               <h3 className="my-3 font-serif text-2xl font-normal leading-[1.35]">{data.responseTime.title}</h3>
+
+//               <p className="text-[13px] leading-[1.9] text-secondary">
+//                 {contact.responseTime ||
+//                   data.responseTime.description}
+//               </p>
+//             </article>
+//           </div>
+//         </section>
+
+//         {/* 09. Factory visits */}
+//         <section
+//           className="grid grid-cols-[1.1fr_1fr] gap-[70px] rounded-[4px] bg-primary p-[50px] text-background [&_h2]:text-[44px] [&_p]:text-xs [&_p]:text-white/60 [&_ol]:m-0 [&_ol]:list-none [&_ol]:self-center [&_ol]:p-0 [&_li]:flex [&_li]:gap-6 [&_li]:border-b [&_li]:border-white/10 [&_li]:py-5 [&_li:last-child]:border-0 [&_li>span]:pt-[7px] [&_li>span]:font-serif [&_li>span]:text-xl [&_li>span]:text-accent [&_li>span]:italic [&_li_h3]:mt-0 [&_li_h3]:mb-[5px] [&_li_h3]:text-[21px] [&_li_p]:m-0 [&_li_p]:text-[11px] max-[1000px]:gap-[35px] max-[1000px]:p-[35px] max-[720px]:grid-cols-1 max-[720px]:gap-[25px] max-[720px]:px-6 max-[720px]:py-[30px] max-[720px]:[&_h2]:text-[38px]"
+//           aria-labelledby="visit-heading"
+//         >
+//           <div>
+//             <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//               {data.factoryVisit.eyebrow}
+//             </span>
+
+//             <h2 id="visit-heading" className="my-3 font-serif text-[clamp(30px,3.2vw,43px)] font-normal leading-[1.2] tracking-[-0.03em]">
+//               {data.factoryVisit.title}
+//               <br />
+//               <em className="font-normal text-accent">{data.factoryVisit.highlightedTitle}</em>
+//             </h2>
+
+//             <p className="text-[13px] leading-[1.9] text-secondary">{data.factoryVisit.description}</p>
+
+//             <a
+//               href={`mailto:${business.email}?subject=${encodeURIComponent(
+//                 data.factoryVisit.button
+//               )}`}
+//               className={cn(buttonVariants({ variant: "secondary" }), "h-auto justify-between gap-10 rounded-none border border-primary bg-primary px-6 py-[17px] text-[11px] font-medium text-background mt-[18px] bg-background text-primary hover:bg-background/90")}
+//             >
+//               {data.factoryVisit.button}
+//               <ArrowUpRight className="size-3.5" aria-hidden="true" />
+//             </a>
+//           </div>
+
+//           <ol>
+//             {data.factoryVisit.steps.map((step) => (
+//               <li key={step.number}>
+//                 <span>{step.number}</span>
+
+//                 <div>
+//                   <h3 className="my-3 font-serif text-2xl font-normal leading-[1.35]">{step.title}</h3>
+//                   <p className="text-[13px] leading-[1.9] text-secondary">{step.description}</p>
+//                 </div>
+//               </li>
+//             ))}
+//           </ol>
+//         </section>
+
+//         {/* 10. Map loaded after interaction */}
+//         <section
+//           className="my-[70px] max-[720px]:my-[45px]"
+//           aria-labelledby="map-heading"
+//         >
+//           <div className="mb-[30px] flex items-end justify-between gap-[35px] [&>p]:mb-[6px] [&>p]:max-w-[340px] [&>p]:text-[11px] max-[720px]:block max-[720px]:[&>p]:mt-[15px]">
+//             <div>
+//               <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                 {data.map.eyebrow}
+//               </span>
+
+//               <h2 id="map-heading" className="my-3 font-serif text-[clamp(30px,3.2vw,43px)] font-normal leading-[1.2] tracking-[-0.03em]">{data.map.title}</h2>
+//             </div>
+
+//             <p className="text-[13px] leading-[1.9] text-secondary">
+//               {hasFactoryLocation
+//                 ? data.map.confirmedDescription
+//                 : data.map.pendingDescription}
+//             </p>
+//           </div>
+
+//           <div className="relative h-[400px] overflow-hidden border border-border bg-surface-muted [&_iframe]:h-full [&_iframe]:w-full [&_iframe]:border-0 max-[720px]:h-[410px]">
+//             {mapLoaded ? (
+//               <>
+//                 <iframe
+//                   title={data.map.iframeTitle}
+//                   src={`https://maps.google.com/maps?q=${encodeURIComponent(
+//                     mapQuery
+//                   )}&output=embed`}
+//                   loading="lazy"
+//                   referrerPolicy="no-referrer"
+//                   allowFullScreen
+//                 />
+
+//                 <a
+//                   className="absolute right-4 bottom-4 inline-flex items-center gap-1 bg-surface px-[18px] py-3 text-[11px] text-primary shadow-[0_3px_20px_#0002]"
+//                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+//                     mapQuery
+//                   )}`}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                 >
+//                   {data.map.openLarger} <ArrowUpRight className="inline size-3" aria-hidden="true" />
+//                 </a>
+//               </>
+//             ) : (
+//               <div className="flex h-full flex-col items-center justify-center bg-[linear-gradient(90deg,#a58b650b_1px,transparent_1px),linear-gradient(#a58b650b_1px,transparent_1px)] bg-size-[45px_45px] p-[30px] text-center [&_h3]:my-2.5 [&_h3]:text-[28px] [&_p]:mt-0 [&_p]:mb-5 [&_p]:max-w-[360px] [&_p]:text-[11px]">
+//                 <div className="mb-[18px] rounded-full border border-border bg-surface p-4 text-accent">
+//                   <Icon kind="pin" />
+//                 </div>
+
+//                 <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                   {data.map.placeholderLabel}
+//                 </span>
+
+//                 <h3 className="my-3 font-serif text-2xl font-normal leading-[1.35]">{data.map.placeholderTitle}</h3>
+//                 <p className="text-[13px] leading-[1.9] text-secondary">{data.map.placeholderDescription}</p>
+
+//                 <Button variant="default"
+//                   className={cn(buttonVariants({ variant: "default" }), "h-auto justify-between gap-10 rounded-none border border-primary bg-primary px-6 py-[17px] text-[11px] font-medium text-background")}
+//                   type="button"
+//                   onClick={() => setMapLoaded(true)}
+//                 >
+//                   {hasFactoryLocation
+//                     ? data.map.loadFactory
+//                     : data.map.loadHeadOffice}
+//                   <ArrowUpRight className="size-3.5" aria-hidden="true" />
+//                 </Button>
+//               </div>
+//             )}
+//           </div>
+//         </section>
+
+//         {/* 11. General contact form */}
+//         <section
+//           id="general-enquiry"
+//           className="grid scroll-mt-[105px] grid-cols-[0.8fr_1.2fr] gap-[75px] border-t border-border pt-[55px] pb-[65px] [&_h2]:text-[48px] [&>div>p]:max-w-[340px] [&>div>p]:text-xs max-[1000px]:gap-[35px] max-[720px]:grid-cols-1 max-[720px]:gap-[30px] max-[720px]:py-10 max-[720px]:[&_h2]:text-[42px]"
+//           aria-labelledby="enquiry-heading"
+//         >
+//           <div>
+//             <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//               {data.form.eyebrow}
+//             </span>
+
+//             <h2 id="enquiry-heading" className="my-3 font-serif text-[clamp(30px,3.2vw,43px)] font-normal leading-[1.2] tracking-[-0.03em]">
+//               {data.form.title}
+//               <br />
+//               <em className="font-normal text-accent">{data.form.highlightedTitle}</em>
+//             </h2>
+
+//             <p className="text-[13px] leading-[1.9] text-secondary">{data.form.description}</p>
+
+//             <div className="mt-[35px] flex items-center gap-[15px] border-t border-border pt-[22px] text-accent [&_span]:text-[10px] [&_span]:text-secondary [&_a]:mt-2 [&_a]:block [&_a]:text-primary [&_a]:[overflow-wrap:anywhere]">
+//               <Icon kind="email" />
+
+//               <span>
+//                 {data.form.directEmail}
+//                 <a href={`mailto:${business.email}`}>
+//                   {business.email}
+//                 </a>
+//               </span>
+//             </div>
+//           </div>
+
+//           <form onSubmit={prepareEmail} className="border border-border bg-surface p-[30px] max-[720px]:px-5 max-[720px]:py-6">
+//             <div className="mb-[25px] grid grid-cols-2 gap-[23px] max-[720px]:grid-cols-1 max-[720px]:gap-5">
+//               <label className="block text-[10px] text-primary [&>span]:text-accent">
+//                 {data.form.name} <span>*</span>
+//                 <Input className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]"
+//                   name="name"
+//                   autoComplete="name"
+//                   required
+//                   maxLength={100}
+//                   placeholder={data.form.namePlaceholder}
+//                 />
+//               </label>
+
+//               <label className="block text-[10px] text-primary [&>span]:text-accent">
+//                 {data.form.company}
+//                 <Input className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]"
+//                   name="company"
+//                   autoComplete="organization"
+//                   maxLength={150}
+//                   placeholder={data.form.companyPlaceholder}
+//                 />
+//               </label>
+
+//               <label className="block text-[10px] text-primary [&>span]:text-accent">
+//                 {data.form.email} <span>*</span>
+//                 <Input className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]"
+//                   name="email"
+//                   type="email"
+//                   autoComplete="email"
+//                   required
+//                   maxLength={254}
+//                   placeholder={data.form.emailPlaceholder}
+//                 />
+//               </label>
+
+//               <label className="block text-[10px] text-primary [&>span]:text-accent">
+//                 {data.form.telephone}
+//                 <Input className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]"
+//                   name="phone"
+//                   type="tel"
+//                   autoComplete="tel"
+//                   maxLength={40}
+//                   placeholder={data.form.telephonePlaceholder}
+//                 />
+//               </label>
+
+//               <label className="block text-[10px] text-primary [&>span]:text-accent">
+//                 {data.form.country}
+//                 <Input className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]"
+//                   name="country"
+//                   autoComplete="country-name"
+//                   maxLength={100}
+//                   placeholder={data.form.countryPlaceholder}
+//                 />
+//               </label>
+
+//               <label className="block text-[10px] text-primary [&>span]:text-accent">
+//                 {data.form.subject}
+//                 <select className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]" name="subject">
+//                   {Object.entries(data.form.subjects).map(
+//                     ([key, label]) => (
+//                       <option key={key} value={label}>
+//                         {label}
+//                       </option>
+//                     )
+//                   )}
+//                 </select>
+//               </label>
+//             </div>
+
+//             <label className="block text-[10px] text-primary [&>span]:text-accent">
+//               {data.form.message} <span>*</span>
+//               <textarea className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)] min-h-[120px] resize-y"
+//                 name="message"
+//                 rows={5}
+//                 required
+//                 maxLength={4000}
+//                 placeholder={data.form.messagePlaceholder}
+//               />
+//             </label>
+
+//             <p className="mt-[17px] mb-[22px] text-[10px] leading-[1.9] text-secondary">
+//               {data.form.requiredNote}
+//             </p>
+
+//             <Button variant="default" className={cn(buttonVariants({ variant: "default" }), "h-auto justify-between gap-10 rounded-none border border-primary bg-primary px-6 py-[17px] text-[11px] font-medium text-background")} type="submit">
+//               {data.form.button}
+//               <ArrowUpRight className="size-3.5" aria-hidden="true" />
+//             </Button>
+
+//             <p role="status" className="mt-[15px] mb-0 text-[11px] leading-[1.9] text-secondary empty:hidden">
+//               {draftPrepared ? data.form.draftPrepared : ""}
+//             </p>
+//           </form>
+//         </section>
+
+//         {/* 12. Social media */}
+//         <section
+//           className="flex items-center justify-between gap-10 border-t border-border pt-[45px] pb-[65px] [&_h2]:text-[34px] [&_p]:text-[11px] max-[720px]:flex-col max-[720px]:items-start max-[720px]:gap-5 max-[720px]:pb-[45px] max-[720px]:[&_h2]:text-[30px]"
+//           aria-labelledby="social-heading"
+//         >
+//           <div>
+//             <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//               {data.social.eyebrow}
+//             </span>
+
+//             <h2 id="social-heading" className="my-3 font-serif text-[clamp(30px,3.2vw,43px)] font-normal leading-[1.2] tracking-[-0.03em]">{data.social.title}</h2>
+//             <p className="text-[13px] leading-[1.9] text-secondary">{data.social.description}</p>
+//           </div>
+
+//           <div className="max-w-[370px] [&>div]:border-l [&>div]:border-border [&>div]:pl-[25px] [&_a]:mt-3 [&_a]:flex [&_a]:items-center [&_a]:justify-between [&_a]:gap-[25px] [&_a]:text-[11px] max-[720px]:[&>div]:border-l-0 max-[720px]:[&>div]:pl-0">
+//             {contact.socialProfiles.length > 0 ? (
+//               contact.socialProfiles.map((profile) => (
+//                 <a
+//                   key={profile.url}
+//                   href={profile.url}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                 >
+//                   {profile.name}
+//                   <Icon kind="arrow" />
+//                 </a>
+//               ))
+//             ) : (
+//               <div>
+//                 <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
+//                   {data.social.profilesLabel}
+//                 </span>
+
+//                 <p className="text-[13px] leading-[1.9] text-secondary">{data.social.pendingProfiles}</p>
+
+//                 <a
+//                   href={`mailto:${business.email}?subject=${encodeURIComponent(
+//                     data.social.requestProfiles
+//                   )}`}
+//                 >
+//                   {data.social.requestProfiles} <ArrowUpRight className="inline size-3" aria-hidden="true" />
+//                 </a>
+//               </div>
+//             )}
+//           </div>
+//         </section>
+//       </div>
+//     </div>
+//   );
+// }
+
+
 
 
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
+import ContactMethods from "./ContactMethods";
+import { motion, useSpring, useReducedMotion } from "motion/react";
 import { useLanguage } from "@/src/providers";
+import { Button, buttonVariants } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
+import { cn } from "@/src/lib/utils";
+import { Mail, Phone, MessageCircle, MapPin, Clock3, ArrowUpRight, Check, ArrowDown } from "lucide-react";
+import FactoryVisit from "./FactoryVisit";
 
 const contact = {
   whatsapp: "",
@@ -29,53 +806,87 @@ type IconKind =
   | "arrow";
 
 function Icon({ kind }: { kind: IconKind }) {
-  const paths = {
-    email: (
-      <>
-        <rect x="3" y="5" width="18" height="14" rx="3" />
-        <path d="m4 7 8 6 8-6" />
-      </>
-    ),
-    phone: (
-      <path d="M7 3H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3l-5-2-2 2a15 15 0 0 1-7-7l2-2-2-5Z" />
-    ),
-    chat: (
-      <>
-        <path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 21l1.9-5.6A8.5 8.5 0 1 1 21 11.5Z" />
-        <path d="M8 12h8M8 8h5" />
-      </>
-    ),
-    pin: (
-      <>
-        <path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z" />
-        <circle cx="12" cy="10" r="2" />
-      </>
-    ),
-    clock: (
-      <>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 7v5l3 2" />
-      </>
-    ),
-    arrow: <path d="M5 19 19 5M5 5h14v14" />,
-  };
+  const icons = { email: Mail, phone: Phone, chat: MessageCircle, pin: MapPin, clock: Clock3, arrow: ArrowUpRight };
+  const Component = icons[kind];
+  return <Component className="size-[22px] shrink-0" strokeWidth={1.3} aria-hidden="true" />;
+}
+
+function ContactOrbit() {
+  const tiles = useRef<(HTMLDivElement | null)[]>([]);
+  const ring = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const parent = ring.current?.parentElement;
+    if (!parent) return;
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let radius = 120;
+    let angle = -Math.PI / 6;
+    let previous = 0;
+    let frame = 0;
+    const inclination = (58 * Math.PI) / 180;
+
+    function position() {
+      tiles.current.forEach((tile, index) => {
+        if (!tile) return;
+        const phase = angle + index * (Math.PI * 2 / 3);
+        const x = Math.cos(phase) * radius;
+        const y = Math.sin(phase) * radius * Math.cos(inclination);
+        const z = Math.sin(phase) * radius * Math.sin(inclination);
+        tile.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, ${z}px) rotate(${Math.cos(phase) * 9}deg)`;
+      });
+    }
+
+    function measure() {
+      radius = Math.min(parent!.clientWidth * 0.44, 155);
+      position();
+    }
+
+    function animate(time: number) {
+      if (!document.hidden) {
+        if (previous) angle += Math.min(time - previous, 50) / 18000 * Math.PI * 2;
+        previous = time;
+        position();
+      } else previous = 0;
+      frame = requestAnimationFrame(animate);
+    }
+
+    function updateMotion() {
+      cancelAnimationFrame(frame);
+      previous = 0;
+      position();
+      if (!media.matches) frame = requestAnimationFrame(animate);
+    }
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(parent);
+    media.addEventListener("change", updateMotion);
+    measure();
+    updateMotion();
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      media.removeEventListener("change", updateMotion);
+    };
+  }, []);
 
   return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {paths[kind]}
-    </svg>
+    <>
+      <div ref={ring} className="pointer-events-none absolute left-1/2 top-[43%] aspect-square w-[88%] max-w-[310px] rounded-full border border-[#d8ba7d]/50 shadow-[0_0_18px_rgba(210,175,110,0.08)] [transform:translate(-50%,-50%)_rotateX(58deg)]" />
+      {[Mail, Phone, MapPin].map((ContactIcon, index) => (
+        <div
+          key={index}
+          ref={node => { tiles.current[index] = node; }}
+          data-contact-orbit={index}
+          style={{ transform: `translate(-50%, -50%) translate3d(${Math.cos(-Math.PI / 6 + index * Math.PI * 2 / 3) * 120}px, ${Math.sin(-Math.PI / 6 + index * Math.PI * 2 / 3) * 64}px, ${Math.sin(-Math.PI / 6 + index * Math.PI * 2 / 3) * 102}px)` }}
+          className="pointer-events-none absolute left-1/2 top-[43%] flex size-12 items-center justify-center rounded-2xl border border-[#d5bb84]/60 bg-[linear-gradient(135deg,#eee0bd,#b6975f_55%,#806239)] text-[#47351f] shadow-[5px_9px_14px_rgba(0,0,0,0.4),inset_1px_1px_2px_rgba(255,255,255,0.7),inset_-2px_-2px_3px_rgba(70,45,15,0.2)] will-change-transform"
+        >
+          <ContactIcon className="size-5" strokeWidth={1.4} aria-hidden="true" />
+        </div>
+      ))}
+    </>
   );
 }
+
 
 export default function ContactUsSection() {
   const { t, locale } = useLanguage();
@@ -86,6 +897,9 @@ export default function ContactUsSection() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [draftPrepared, setDraftPrepared] = useState(false);
   const [copied, setCopied] = useState(false);
+  const reduceMotion = useReducedMotion();
+  const artRotateX = useSpring(10, { stiffness: 110, damping: 22 });
+  const artRotateY = useSpring(-14, { stiffness: 110, damping: 22 });
 
   const phoneHref = business.phonePrimary
     .replace(/^\+86\s*\(0(\d+)\)/, "+86$1")
@@ -141,230 +955,154 @@ export default function ContactUsSection() {
 
   return (
     <div
-      className="contact-page"
+      className="bg-background text-primary [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-accent [&_a]:focus-visible:outline-offset-4 motion-reduce:[&_*]:transition-none [&:lang(zh-CN)_h1]:text-[clamp(36px,4.3vw,59px)] [&:lang(zh-CN)_h1]:leading-[1.35] [&:lang(zh-CN)_h1]:tracking-[0.01em] [&:lang(zh-CN)_em]:not-italic [&:lang(zh-CN)_h2]:leading-[1.4] [&:lang(zh-CN)_h3]:leading-[1.5]"
       lang={locale === "zh" ? "zh-CN" : "en"}
     >
       {/* 01. Contact introduction */}
       <section
-        className="contact-hero"
+        className="relative overflow-hidden border-b border-border bg-[radial-gradient(ellipse_at_90%_50%,#a58b6517,transparent_55%)]"
         aria-labelledby="contact-heading"
       >
-        <div className="contact-wrap">
-          <div className="contact-breadcrumb">
+        <div className="mx-auto max-w-[1280px] px-7 max-[720px]:px-5">
+          <div className="flex gap-[14px] pt-[30px] text-[10px] text-secondary">
             <Link href="/">{data.home}</Link>
             <span>/</span>
             <span>{data.breadcrumb}</span>
           </div>
 
-          <div className="contact-hero-grid">
+          <div className="grid grid-cols-[1.45fr_1fr] items-center gap-[60px] pt-[65px] pb-[70px] [&_h1]:my-[26px] [&_p]:mb-7 [&_p]:max-w-[490px] max-[1000px]:gap-[25px] max-[720px]:grid-cols-1 max-[720px]:gap-7 max-[720px]:pt-[42px] max-[720px]:pb-[38px]">
             <div>
-              <span className="contact-kicker">
+              <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
                 {data.introduction.eyebrow}
               </span>
 
-              <h1 id="contact-heading">
+              <h1 id="contact-heading" className="my-[26px] font-serif text-[clamp(44px,5.5vw,76px)] font-normal leading-[1.06] tracking-[-0.045em] max-[720px]:text-[49px]">
                 {data.introduction.title}
                 <br />
-                <em>{data.introduction.highlightedTitle}</em>
+                <em className="font-normal text-accent">{data.introduction.highlightedTitle}</em>
               </h1>
 
-              <p>{data.introduction.description}</p>
+              <p className="text-[13px] leading-[1.9] text-secondary">{data.introduction.description}</p>
 
               <a
-                className="contact-button"
+                className={cn(buttonVariants({ variant: "default" }), "h-auto justify-between gap-10 rounded-none border border-primary bg-primary px-6 py-[17px] text-[11px] font-medium text-background")}
                 href="#general-enquiry"
               >
                 {data.introduction.button}
-                <span>↗</span>
+                <ArrowUpRight className="size-3.5" aria-hidden="true" />
               </a>
             </div>
 
-            <div className="contact-hero-art" aria-hidden="true">
-              <div className="contact-orbit" />
-              <div className="contact-orbit inner" />
+            <div
+              aria-hidden="true"
+              onPointerMove={(event) => {
+                if (reduceMotion || event.pointerType !== "mouse") return;
+                const rect = event.currentTarget.getBoundingClientRect();
+                artRotateX.set(10 - ((event.clientY - rect.top) / rect.height - 0.5) * 16);
+                artRotateY.set(-14 + ((event.clientX - rect.left) / rect.width - 0.5) * 24);
+              }}
+              onPointerLeave={() => { artRotateX.set(10); artRotateY.set(-14); }}
+              onPointerCancel={() => { artRotateX.set(10); artRotateY.set(-14); }}
+              className="relative mx-auto w-full max-w-[390px] justify-self-center [perspective:1100px] max-[720px]:max-w-[330px]"
+            >
+              <div className="absolute inset-0 translate-x-3 translate-y-4 rounded-t-[160px] rounded-b-[28px] bg-[#a58b65]/25" />
+              <div className="relative overflow-hidden rounded-t-[160px] rounded-b-[28px] border border-[#b39a70]/35 bg-[#171717] shadow-[0_35px_65px_-25px_rgba(35,25,20,0.55),inset_0_1px_0_rgba(255,255,255,0.12)]">
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_10%,rgba(185,153,102,0.27),transparent_65%)]" />
+                <div className="relative aspect-[1/1.05] [perspective:1000px]">
+                  <motion.div
+                    style={{ rotateX: artRotateX, rotateY: artRotateY }}
+                    className="absolute inset-6 [transform-style:preserve-3d]"
+                  >
+                    <div className="absolute left-1/2 top-[43%] size-[260px] rounded-full border border-[#c7aa76]/20 [transform:translate(-50%,-50%)_rotateY(28deg)] max-[380px]:size-[220px]" />
+                    <motion.div
+                      animate={reduceMotion ? { y: 0 } : { y: [-6, 6, -6] }}
+                      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                      className="absolute left-1/2 top-[43%] size-[156px] -translate-x-1/2 -translate-y-1/2 [transform-style:preserve-3d]"
+                    >
+                      {/* Polished gold communication sphere */}
+                      <div className="absolute inset-0 rounded-full border border-[#eed9a7]/40 bg-[radial-gradient(circle_at_28%_23%,#fff5d8_0%,#e0c68c_17%,#af8950_40%,#6b512e_67%,#242019_91%)] shadow-[inset_5px_5px_14px_rgba(255,245,210,0.25),inset_-12px_-14px_20px_rgba(20,15,8,0.5),12px_22px_30px_rgba(0,0,0,0.45)]" />
+                      <div className="absolute left-5 top-5 h-7 w-12 -rotate-35 rounded-full bg-[#fff4cf]/60 blur-lg [transform:translateZ(25px)]" />
+                      <div className="absolute inset-3 rounded-full border border-[#f6e6b5]/30 [transform:translateZ(18px)_rotateY(55deg)_rotateZ(-25deg)]" />
+                      <div className="absolute inset-3 rounded-full border border-[#f6e6b5]/20 [transform:translateZ(15px)_rotateX(65deg)_rotateZ(-25deg)]" />
 
-              <div className="contact-art-center">
-                <Icon kind="chat" />
-                <span>{data.introduction.artLabel}</span>
-                <i>{data.introduction.artTitle}</i>
+                      {/* Raised porcelain speech bubble and gold sidewall */}
+                      <div className="absolute left-5 top-[49px] h-[66px] w-[100px] rounded-[23px] bg-[#9e8051] shadow-[6px_10px_14px_rgba(0,0,0,0.3)] [transform:translateZ(53px)_translate(5px,5px)_rotate(-9deg)]" />
+                      <div className="absolute left-5 top-[49px] flex h-[66px] w-[100px] items-center justify-center gap-2 rounded-[23px] border border-white/90 bg-[linear-gradient(135deg,#fffdf3,#eee3cc)] shadow-[inset_2px_2px_3px_white,inset_-3px_-3px_6px_rgba(120,95,55,0.18)] [transform:translateZ(58px)_rotate(-9deg)]">
+                        <span className="size-2.5 rounded-full bg-[#a48852] shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)]" />
+                        <span className="size-2.5 rounded-full bg-[#a48852] shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)]" />
+                        <span className="size-2.5 rounded-full bg-[#a48852] shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)]" />
+                        <div className="absolute -bottom-2 left-5 size-5 rounded-br-[5px] bg-[#f1e7d1] [clip-path:polygon(0_0,100%_0,0_100%)]" />
+                      </div>
+                      <div className="absolute right-0 top-7 flex size-10 items-center justify-center rounded-full border border-[#f8e9c3] bg-[linear-gradient(135deg,#f3dfb0,#a57c3e)] text-[#5d4527] shadow-[3px_5px_8px_rgba(0,0,0,0.3),inset_0_1px_2px_white] [transform:translateZ(65px)]"><MessageCircle className="size-5" strokeWidth={1.3} /></div>
+                    </motion.div>
+
+                    <ContactOrbit />
+
+                    <div className="absolute bottom-2 left-1/2 h-14 w-[220px] [transform:translateX(-50%)_translateZ(0px)]">
+                      <div className="absolute inset-x-0 bottom-0 h-10 rounded-[50%] bg-[#080808] shadow-[0_12px_20px_rgba(0,0,0,0.45)]" />
+                      <div className="absolute inset-x-0 top-0 h-10 rounded-[50%] border-2 border-[#bda06d] bg-[linear-gradient(145deg,#454034,#171714_65%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]" />
+                    </div>
+                  </motion.div>
+                </div>
+                <div className="relative mx-7 border-t border-white/10 pt-5 pb-7">
+                  <span className="block text-[8px] tracking-[0.22em] text-[#bfa372]">{data.introduction.artLabel}</span>
+                  <div className="mt-3 font-serif text-[27px] leading-[1.15] text-[#f1e8d8]">{data.introduction.artTitle}</div>
+                  <span className="mt-4 block text-[7px] tracking-[0.15em] text-[#a99b85]">{data.introduction.artCaption}</span>
+                </div>
               </div>
-
-              <span className="contact-art-caption">
-                {data.introduction.artCaption}
-              </span>
             </div>
           </div>
 
-          <div className="contact-hero-bottom">
+          <div className="flex justify-between border-t border-border py-5 text-[8px] tracking-[0.12em] text-secondary max-[720px]:gap-5 max-[720px]:text-[7px] max-[720px]:leading-[1.8]">
             <span>{data.introduction.footerText}</span>
             <a href="#contact-methods">
-              {data.introduction.scrollText} ↓
+              {data.introduction.scrollText} <ArrowDown className="inline size-3" aria-hidden="true" />
             </a>
           </div>
         </div>
       </section>
 
-      <div className="contact-wrap contact-content">
+      <div className="mx-auto max-w-[1280px] px-7 max-[720px]:px-5 pt-[75px] max-[720px]:pt-[45px]">
         {/* 02–04. Email, telephone and WhatsApp */}
-        <section
-          id="contact-methods"
-          aria-labelledby="contact-methods-heading"
-        >
-          <div className="contact-section-head">
-            <div>
-              <span className="contact-kicker">
-                {data.contactMethods.eyebrow}
-              </span>
-
-              <h2 id="contact-methods-heading">
-                {data.contactMethods.title}
-              </h2>
-            </div>
-
-            <p>{data.contactMethods.description}</p>
-          </div>
-
-          <div className="contact-method-grid">
-            <article className="contact-method">
-              <div className="contact-card-top">
-                <Icon kind="email" />
-                <span>02</span>
-              </div>
-
-              <span className="contact-label">
-                {data.email.label}
-              </span>
-
-              <a
-                className="contact-email"
-                href={`mailto:${business.email}`}
-              >
-                {business.email}
-              </a>
-
-              <p>{data.email.description}</p>
-
-              <button
-                className="contact-small-link"
-                onClick={copyEmail}
-                type="button"
-                aria-live="polite"
-              >
-                {copied
-                  ? `${data.email.copied} ✓`
-                  : `${data.email.copy} ↗`}
-              </button>
-            </article>
-
-            <article className="contact-method">
-              <div className="contact-card-top">
-                <Icon kind="phone" />
-                <span>03</span>
-              </div>
-
-              <span className="contact-label">
-                {data.telephone.label}
-              </span>
-
-              <a
-                className="contact-method-value"
-                href={`tel:${phoneHref}`}
-              >
-                {business.phonePrimary}
-              </a>
-
-              <p>{data.telephone.description}</p>
-
-              <a
-                className="contact-small-link"
-                href={`tel:${phoneHref}`}
-              >
-                {data.telephone.button} ↗
-              </a>
-            </article>
-
-            <article className="contact-method">
-              <div className="contact-card-top">
-                <Icon kind="chat" />
-                <span>04</span>
-              </div>
-
-              <span className="contact-label">
-                {data.whatsapp.label}
-              </span>
-
-              <h3 className="contact-method-value">
-                {data.whatsapp.title}
-              </h3>
-
-              <p>
-                {contact.whatsapp
-                  ? `+${contact.whatsapp}`
-                  : data.whatsapp.description}
-              </p>
-
-              <a
-                className="contact-small-link"
-                href={
-                  contact.whatsapp
-                    ? `https://wa.me/${contact.whatsapp}`
-                    : `mailto:${business.email}?subject=${encodeURIComponent(
-                        data.whatsapp.request
-                      )}`
-                }
-                {...(contact.whatsapp
-                  ? {
-                      target: "_blank",
-                      rel: "noopener noreferrer",
-                    }
-                  : {})}
-              >
-                {contact.whatsapp
-                  ? data.whatsapp.open
-                  : data.whatsapp.request}{" "}
-                ↗
-              </a>
-            </article>
-          </div>
-        </section>
+        <ContactMethods data={data} business={business} copied={copied} copyEmail={copyEmail} phoneHref={phoneHref} whatsapp={contact.whatsapp} />
 
         {/* 05–08. Addresses, hours and response time */}
         <section
-          className="contact-logistics"
+          className="my-[65px] grid grid-cols-[1.1fr_1fr] gap-[70px] border-t border-border pt-10 [&_article+article]:border-t [&_article+article]:border-border [&_article+article]:pt-[30px] [&_p]:my-2.5 [&_p]:text-xs max-[1000px]:gap-[35px] max-[720px]:my-10 max-[720px]:grid-cols-1 max-[720px]:gap-[35px]"
           aria-label={data.locations.label}
         >
-          <div className="contact-addresses">
+          <div className="grid gap-8">
             <article>
-              <span className="contact-label">
+              <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
                 {data.locations.headOffice.label}
               </span>
 
-              <h3>{data.locations.headOffice.title}</h3>
+              <h3 className="my-3 font-serif text-2xl font-normal leading-[1.35]">{data.locations.headOffice.title}</h3>
 
-              <address>{business.address}</address>
+              <address className="max-w-[460px] text-[13px] leading-[1.9] text-secondary not-italic">{business.address}</address>
             </article>
 
             <article>
-              <span className="contact-label">
+              <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
                 {data.locations.factory.label}
               </span>
 
-              <h3>{data.locations.factory.title}</h3>
+              <h3 className="my-3 font-serif text-2xl font-normal leading-[1.35]">{data.locations.factory.title}</h3>
 
-              <address>
+              <address className="max-w-[460px] text-[13px] leading-[1.9] text-secondary not-italic">
                 {contact.factoryAddress ||
                   data.locations.factory.pendingAddress}
               </address>
             </article>
           </div>
 
-          <div className="contact-availability">
+          <div className="grid gap-8 max-[720px]:border-t max-[720px]:border-border max-[720px]:pt-[30px]">
             <article>
-              <span className="contact-label">
+              <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
                 {data.businessHours.label}
               </span>
 
-              <div className="contact-time">
+              <div className="mt-4 flex items-center gap-[15px] text-sm [&_b]:mt-[5px] [&_b]:block [&_b]:text-[10px] [&_b]:font-normal [&_b]:text-accent">
                 <Icon kind="clock" />
                 <span>
                   {data.businessHours.timeZone}
@@ -372,20 +1110,20 @@ export default function ContactUsSection() {
                 </span>
               </div>
 
-              <p>
+              <p className="text-[13px] leading-[1.9] text-secondary">
                 {contact.businessHours ||
                   data.businessHours.pendingHours}
               </p>
             </article>
 
             <article>
-              <span className="contact-label">
+              <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
                 {data.responseTime.label}
               </span>
 
-              <h3>{data.responseTime.title}</h3>
+              <h3 className="my-3 font-serif text-2xl font-normal leading-[1.35]">{data.responseTime.title}</h3>
 
-              <p>
+              <p className="text-[13px] leading-[1.9] text-secondary">
                 {contact.responseTime ||
                   data.responseTime.description}
               </p>
@@ -395,30 +1133,30 @@ export default function ContactUsSection() {
 
         {/* 09. Factory visits */}
         <section
-          className="contact-visit"
+          className="grid grid-cols-[1.1fr_1fr] gap-[70px] rounded-[4px] bg-primary p-[50px] text-background [&_h2]:text-[44px] [&_p]:text-xs [&_p]:text-white/60 [&_ol]:m-0 [&_ol]:list-none [&_ol]:self-center [&_ol]:p-0 [&_li]:flex [&_li]:gap-6 [&_li]:border-b [&_li]:border-white/10 [&_li]:py-5 [&_li:last-child]:border-0 [&_li>span]:pt-[7px] [&_li>span]:font-serif [&_li>span]:text-xl [&_li>span]:text-accent [&_li>span]:italic [&_li_h3]:mt-0 [&_li_h3]:mb-[5px] [&_li_h3]:text-[21px] [&_li_p]:m-0 [&_li_p]:text-[11px] max-[1000px]:gap-[35px] max-[1000px]:p-[35px] max-[720px]:grid-cols-1 max-[720px]:gap-[25px] max-[720px]:px-6 max-[720px]:py-[30px] max-[720px]:[&_h2]:text-[38px]"
           aria-labelledby="visit-heading"
         >
           <div>
-            <span className="contact-kicker">
+            <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
               {data.factoryVisit.eyebrow}
             </span>
 
-            <h2 id="visit-heading">
+            <h2 id="visit-heading" className="my-3 font-serif text-[clamp(30px,3.2vw,43px)] font-normal leading-[1.2] tracking-[-0.03em]">
               {data.factoryVisit.title}
               <br />
-              <em>{data.factoryVisit.highlightedTitle}</em>
+              <em className="font-normal text-accent">{data.factoryVisit.highlightedTitle}</em>
             </h2>
 
-            <p>{data.factoryVisit.description}</p>
+            <p className="text-[13px] leading-[1.9] text-secondary">{data.factoryVisit.description}</p>
 
             <a
               href={`mailto:${business.email}?subject=${encodeURIComponent(
                 data.factoryVisit.button
               )}`}
-              className="contact-button contact-light"
+              className={cn(buttonVariants({ variant: "secondary" }), "h-auto justify-between gap-10 rounded-none border border-primary bg-primary px-6 py-[17px] text-[11px] font-medium text-background mt-[18px] bg-background text-primary hover:bg-background/90")}
             >
               {data.factoryVisit.button}
-              <span>↗</span>
+              <ArrowUpRight className="size-3.5" aria-hidden="true" />
             </a>
           </div>
 
@@ -428,8 +1166,8 @@ export default function ContactUsSection() {
                 <span>{step.number}</span>
 
                 <div>
-                  <h3>{step.title}</h3>
-                  <p>{step.description}</p>
+                  <h3 className="my-3 font-serif text-2xl font-normal leading-[1.35]">{step.title}</h3>
+                  <p className="text-[13px] leading-[1.9] text-secondary">{step.description}</p>
                 </div>
               </li>
             ))}
@@ -438,26 +1176,26 @@ export default function ContactUsSection() {
 
         {/* 10. Map loaded after interaction */}
         <section
-          className="contact-map-section"
+          className="my-[70px] max-[720px]:my-[45px]"
           aria-labelledby="map-heading"
         >
-          <div className="contact-section-head">
+          <div className="mb-[30px] flex items-end justify-between gap-[35px] [&>p]:mb-[6px] [&>p]:max-w-[340px] [&>p]:text-[11px] max-[720px]:block max-[720px]:[&>p]:mt-[15px]">
             <div>
-              <span className="contact-kicker">
+              <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
                 {data.map.eyebrow}
               </span>
 
-              <h2 id="map-heading">{data.map.title}</h2>
+              <h2 id="map-heading" className="my-3 font-serif text-[clamp(30px,3.2vw,43px)] font-normal leading-[1.2] tracking-[-0.03em]">{data.map.title}</h2>
             </div>
 
-            <p>
+            <p className="text-[13px] leading-[1.9] text-secondary">
               {hasFactoryLocation
                 ? data.map.confirmedDescription
                 : data.map.pendingDescription}
             </p>
           </div>
 
-          <div className="contact-map">
+          <div className="relative h-[400px] overflow-hidden border border-border bg-surface-muted [&_iframe]:h-full [&_iframe]:w-full [&_iframe]:border-0 max-[720px]:h-[410px]">
             {mapLoaded ? (
               <>
                 <iframe
@@ -471,39 +1209,39 @@ export default function ContactUsSection() {
                 />
 
                 <a
-                  className="contact-map-external"
+                  className="absolute right-4 bottom-4 inline-flex items-center gap-1 bg-surface px-[18px] py-3 text-[11px] text-primary shadow-[0_3px_20px_#0002]"
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                     mapQuery
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {data.map.openLarger} ↗
+                  {data.map.openLarger} <ArrowUpRight className="inline size-3" aria-hidden="true" />
                 </a>
               </>
             ) : (
-              <div className="contact-map-placeholder">
-                <div className="contact-map-pin">
+              <div className="flex h-full flex-col items-center justify-center bg-[linear-gradient(90deg,#a58b650b_1px,transparent_1px),linear-gradient(#a58b650b_1px,transparent_1px)] bg-size-[45px_45px] p-[30px] text-center [&_h3]:my-2.5 [&_h3]:text-[28px] [&_p]:mt-0 [&_p]:mb-5 [&_p]:max-w-[360px] [&_p]:text-[11px]">
+                <div className="mb-[18px] rounded-full border border-border bg-surface p-4 text-accent">
                   <Icon kind="pin" />
                 </div>
 
-                <span className="contact-label">
+                <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
                   {data.map.placeholderLabel}
                 </span>
 
-                <h3>{data.map.placeholderTitle}</h3>
-                <p>{data.map.placeholderDescription}</p>
+                <h3 className="my-3 font-serif text-2xl font-normal leading-[1.35]">{data.map.placeholderTitle}</h3>
+                <p className="text-[13px] leading-[1.9] text-secondary">{data.map.placeholderDescription}</p>
 
-                <button
-                  className="contact-button"
+                <Button variant="default"
+                  className={cn(buttonVariants({ variant: "default" }), "h-auto justify-between gap-10 rounded-none border border-primary bg-primary px-6 py-[17px] text-[11px] font-medium text-background")}
                   type="button"
                   onClick={() => setMapLoaded(true)}
                 >
                   {hasFactoryLocation
                     ? data.map.loadFactory
                     : data.map.loadHeadOffice}
-                  <span>↗</span>
-                </button>
+                  <ArrowUpRight className="size-3.5" aria-hidden="true" />
+                </Button>
               </div>
             )}
           </div>
@@ -512,23 +1250,23 @@ export default function ContactUsSection() {
         {/* 11. General contact form */}
         <section
           id="general-enquiry"
-          className="contact-form-section"
+          className="grid scroll-mt-[105px] grid-cols-[0.8fr_1.2fr] gap-[75px] border-t border-border pt-[55px] pb-[65px] [&_h2]:text-[48px] [&>div>p]:max-w-[340px] [&>div>p]:text-xs max-[1000px]:gap-[35px] max-[720px]:grid-cols-1 max-[720px]:gap-[30px] max-[720px]:py-10 max-[720px]:[&_h2]:text-[42px]"
           aria-labelledby="enquiry-heading"
         >
           <div>
-            <span className="contact-kicker">
+            <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
               {data.form.eyebrow}
             </span>
 
-            <h2 id="enquiry-heading">
+            <h2 id="enquiry-heading" className="my-3 font-serif text-[clamp(30px,3.2vw,43px)] font-normal leading-[1.2] tracking-[-0.03em]">
               {data.form.title}
               <br />
-              <em>{data.form.highlightedTitle}</em>
+              <em className="font-normal text-accent">{data.form.highlightedTitle}</em>
             </h2>
 
-            <p>{data.form.description}</p>
+            <p className="text-[13px] leading-[1.9] text-secondary">{data.form.description}</p>
 
-            <div className="contact-form-note">
+            <div className="mt-[35px] flex items-center gap-[15px] border-t border-border pt-[22px] text-accent [&_span]:text-[10px] [&_span]:text-secondary [&_a]:mt-2 [&_a]:block [&_a]:text-primary [&_a]:[overflow-wrap:anywhere]">
               <Icon kind="email" />
 
               <span>
@@ -540,11 +1278,11 @@ export default function ContactUsSection() {
             </div>
           </div>
 
-          <form onSubmit={prepareEmail} className="contact-form">
-            <div className="contact-fields">
-              <label>
+          <form onSubmit={prepareEmail} className="border border-border bg-surface p-[30px] max-[720px]:px-5 max-[720px]:py-6">
+            <div className="mb-[25px] grid grid-cols-2 gap-[23px] max-[720px]:grid-cols-1 max-[720px]:gap-5">
+              <label className="block text-[10px] text-primary [&>span]:text-accent">
                 {data.form.name} <span>*</span>
-                <input
+                <Input className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]"
                   name="name"
                   autoComplete="name"
                   required
@@ -553,9 +1291,9 @@ export default function ContactUsSection() {
                 />
               </label>
 
-              <label>
+              <label className="block text-[10px] text-primary [&>span]:text-accent">
                 {data.form.company}
-                <input
+                <Input className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]"
                   name="company"
                   autoComplete="organization"
                   maxLength={150}
@@ -563,9 +1301,9 @@ export default function ContactUsSection() {
                 />
               </label>
 
-              <label>
+              <label className="block text-[10px] text-primary [&>span]:text-accent">
                 {data.form.email} <span>*</span>
-                <input
+                <Input className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]"
                   name="email"
                   type="email"
                   autoComplete="email"
@@ -575,9 +1313,9 @@ export default function ContactUsSection() {
                 />
               </label>
 
-              <label>
+              <label className="block text-[10px] text-primary [&>span]:text-accent">
                 {data.form.telephone}
-                <input
+                <Input className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]"
                   name="phone"
                   type="tel"
                   autoComplete="tel"
@@ -586,9 +1324,9 @@ export default function ContactUsSection() {
                 />
               </label>
 
-              <label>
+              <label className="block text-[10px] text-primary [&>span]:text-accent">
                 {data.form.country}
-                <input
+                <Input className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]"
                   name="country"
                   autoComplete="country-name"
                   maxLength={100}
@@ -596,9 +1334,9 @@ export default function ContactUsSection() {
                 />
               </label>
 
-              <label>
+              <label className="block text-[10px] text-primary [&>span]:text-accent">
                 {data.form.subject}
-                <select name="subject">
+                <select className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)]" name="subject">
                   {Object.entries(data.form.subjects).map(
                     ([key, label]) => (
                       <option key={key} value={label}>
@@ -610,9 +1348,9 @@ export default function ContactUsSection() {
               </label>
             </div>
 
-            <label>
+            <label className="block text-[10px] text-primary [&>span]:text-accent">
               {data.form.message} <span>*</span>
-              <textarea
+              <textarea className="block h-auto w-full rounded-none border-0 border-b border-border bg-transparent px-0 py-3 text-xs leading-[1.5] text-primary shadow-none outline-none placeholder:text-secondary/70 focus-visible:border-accent focus-visible:ring-0 focus-visible:shadow-[0_1px_0_var(--accent)] min-h-[120px] resize-y"
                 name="message"
                 rows={5}
                 required
@@ -621,16 +1359,16 @@ export default function ContactUsSection() {
               />
             </label>
 
-            <p className="contact-form-hint">
+            <p className="mt-[17px] mb-[22px] text-[10px] leading-[1.9] text-secondary">
               {data.form.requiredNote}
             </p>
 
-            <button className="contact-button" type="submit">
+            <Button variant="default" className={cn(buttonVariants({ variant: "default" }), "h-auto justify-between gap-10 rounded-none border border-primary bg-primary px-6 py-[17px] text-[11px] font-medium text-background")} type="submit">
               {data.form.button}
-              <span>↗</span>
-            </button>
+              <ArrowUpRight className="size-3.5" aria-hidden="true" />
+            </Button>
 
-            <p role="status" className="contact-form-status">
+            <p role="status" className="mt-[15px] mb-0 text-[11px] leading-[1.9] text-secondary empty:hidden">
               {draftPrepared ? data.form.draftPrepared : ""}
             </p>
           </form>
@@ -638,19 +1376,19 @@ export default function ContactUsSection() {
 
         {/* 12. Social media */}
         <section
-          className="contact-social"
+          className="flex items-center justify-between gap-10 border-t border-border pt-[45px] pb-[65px] [&_h2]:text-[34px] [&_p]:text-[11px] max-[720px]:flex-col max-[720px]:items-start max-[720px]:gap-5 max-[720px]:pb-[45px] max-[720px]:[&_h2]:text-[30px]"
           aria-labelledby="social-heading"
         >
           <div>
-            <span className="contact-kicker">
+            <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
               {data.social.eyebrow}
             </span>
 
-            <h2 id="social-heading">{data.social.title}</h2>
-            <p>{data.social.description}</p>
+            <h2 id="social-heading" className="my-3 font-serif text-[clamp(30px,3.2vw,43px)] font-normal leading-[1.2] tracking-[-0.03em]">{data.social.title}</h2>
+            <p className="text-[13px] leading-[1.9] text-secondary">{data.social.description}</p>
           </div>
 
-          <div className="contact-social-links">
+          <div className="max-w-[370px] [&>div]:border-l [&>div]:border-border [&>div]:pl-[25px] [&_a]:mt-3 [&_a]:flex [&_a]:items-center [&_a]:justify-between [&_a]:gap-[25px] [&_a]:text-[11px] max-[720px]:[&>div]:border-l-0 max-[720px]:[&>div]:pl-0">
             {contact.socialProfiles.length > 0 ? (
               contact.socialProfiles.map((profile) => (
                 <a
@@ -665,791 +1403,24 @@ export default function ContactUsSection() {
               ))
             ) : (
               <div>
-                <span className="contact-label">
+                <span className="block text-[9px] leading-[1.8] tracking-[0.2em] text-accent">
                   {data.social.profilesLabel}
                 </span>
 
-                <p>{data.social.pendingProfiles}</p>
+                <p className="text-[13px] leading-[1.9] text-secondary">{data.social.pendingProfiles}</p>
 
                 <a
                   href={`mailto:${business.email}?subject=${encodeURIComponent(
                     data.social.requestProfiles
                   )}`}
                 >
-                  {data.social.requestProfiles} ↗
+                  {data.social.requestProfiles} <ArrowUpRight className="inline size-3" aria-hidden="true" />
                 </a>
               </div>
             )}
           </div>
         </section>
       </div>
-
-      <style jsx>{`
-        .contact-page {
-          background: var(--background);
-          color: var(--primary);
-        }
-
-        .contact-wrap {
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 0 28px;
-        }
-
-        .contact-hero {
-          position: relative;
-          overflow: hidden;
-          border-bottom: 1px solid var(--border);
-          background:
-            radial-gradient(
-              ellipse at 90% 50%,
-              #a58b6517,
-              transparent 55%
-            ),
-            var(--background);
-        }
-
-        .contact-breadcrumb {
-          display: flex;
-          gap: 14px;
-          padding-top: 30px;
-          font-size: 10px;
-          color: var(--secondary);
-        }
-
-        .contact-hero-grid {
-          display: grid;
-          grid-template-columns: 1.45fr 1fr;
-          gap: 60px;
-          align-items: center;
-          padding: 65px 0 70px;
-        }
-
-        .contact-kicker,
-        .contact-label {
-          display: block;
-          font-size: 9px;
-          letter-spacing: 0.2em;
-          color: var(--accent);
-          line-height: 1.8;
-        }
-
-        .contact-hero h1 {
-          font: 400 clamp(44px, 5.5vw, 76px) / 1.06 Georgia, serif;
-          letter-spacing: -0.045em;
-          margin: 26px 0;
-        }
-
-        .contact-page em {
-          font-weight: 400;
-          color: var(--accent);
-        }
-
-        .contact-page p {
-          font-size: 13px;
-          line-height: 1.9;
-          color: var(--secondary);
-        }
-
-        .contact-hero p {
-          max-width: 490px;
-          margin-bottom: 28px;
-        }
-
-        .contact-button {
-          display: inline-flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 40px;
-          background: var(--primary);
-          color: var(--background);
-          padding: 17px 24px;
-          border: 1px solid var(--primary);
-          font-size: 11px;
-          transition:
-            transform 0.25s,
-            box-shadow 0.25s;
-        }
-
-        .contact-button:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 10px 24px #17171717;
-        }
-
-        .contact-hero-art {
-          position: relative;
-          aspect-ratio: 1;
-          max-width: 370px;
-          width: 100%;
-          justify-self: center;
-          perspective: 1000px;
-        }
-
-        .contact-orbit {
-          position: absolute;
-          inset: 4%;
-          border: 1px solid #a58b6544;
-          border-radius: 50%;
-          transform: rotateX(20deg) rotateY(-20deg);
-        }
-
-        .contact-orbit.inner {
-          inset: 15%;
-          border-style: dashed;
-          transform: rotateX(-18deg) rotateY(25deg);
-        }
-
-        .contact-art-center {
-          position: absolute;
-          inset: 24% 18%;
-          border: 1px solid #a58b6544;
-          background: #ffffff66;
-          box-shadow: 0 25px 55px #a58b6515;
-          backdrop-filter: blur(12px);
-          border-radius: 70px 70px 4px 4px;
-          padding: 30px 20px;
-          text-align: center;
-          display: flex;
-          align-items: center;
-          flex-direction: column;
-          justify-content: center;
-          gap: 14px;
-          transform: rotate(-7deg);
-        }
-
-        .contact-art-center span {
-          font-size: 7px;
-          letter-spacing: 0.22em;
-          color: var(--accent);
-        }
-
-        .contact-art-center i {
-          font: italic 28px / 1.2 Georgia, serif;
-        }
-
-        .contact-art-caption {
-          position: absolute;
-          bottom: 0;
-          width: 100%;
-          text-align: center;
-          font-size: 7px;
-          letter-spacing: 0.15em;
-          color: var(--secondary);
-        }
-
-        .contact-hero-bottom {
-          display: flex;
-          justify-content: space-between;
-          border-top: 1px solid var(--border);
-          padding: 20px 0;
-          font-size: 8px;
-          letter-spacing: 0.12em;
-          color: var(--secondary);
-        }
-
-        .contact-content {
-          padding-top: 75px;
-        }
-
-        .contact-section-head {
-          display: flex;
-          align-items: end;
-          justify-content: space-between;
-          gap: 35px;
-          margin-bottom: 30px;
-        }
-
-        .contact-page h2 {
-          font: 400 clamp(30px, 3.2vw, 43px) / 1.2 Georgia, serif;
-          letter-spacing: -0.03em;
-          margin: 12px 0;
-        }
-
-        .contact-section-head > p {
-          font-size: 11px;
-          max-width: 340px;
-          margin: 0 0 6px;
-        }
-
-        .contact-method-grid {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 20px;
-        }
-
-        .contact-method {
-          padding: 30px 24px;
-          background: var(--surface);
-          border: 1px solid var(--border);
-          border-radius: 60px 60px 6px 6px;
-          transition:
-            transform 0.3s,
-            box-shadow 0.3s;
-        }
-
-        .contact-method:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 20px 36px #17171708;
-        }
-
-        .contact-card-top {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          color: var(--accent);
-          margin: 5px 6px 30px;
-        }
-
-        .contact-card-top span {
-          font: italic 15px Georgia, serif;
-        }
-
-        .contact-email {
-          display: block;
-          font-size: clamp(12px, 1.3vw, 17px);
-          overflow-wrap: anywhere;
-          margin: 15px 0 0;
-        }
-
-        .contact-method-value {
-          display: block;
-          font: 400 22px / 1.4 Georgia, serif;
-          margin: 13px 0 0;
-        }
-
-        .contact-method p {
-          font-size: 11px;
-          min-height: 44px;
-          margin: 13px 0 20px;
-        }
-
-        .contact-small-link {
-          font-size: 10px;
-          border-bottom: 1px solid #a58b6555;
-          padding: 0 0 5px;
-        }
-
-        .contact-logistics {
-          display: grid;
-          grid-template-columns: 1.1fr 1fr;
-          gap: 70px;
-          margin: 65px 0;
-          padding-top: 40px;
-          border-top: 1px solid var(--border);
-        }
-
-        .contact-addresses,
-        .contact-availability {
-          display: grid;
-          gap: 32px;
-        }
-
-        .contact-logistics article + article {
-          padding-top: 30px;
-          border-top: 1px solid var(--border);
-        }
-
-        .contact-page h3 {
-          font: 400 24px / 1.35 Georgia, serif;
-          margin: 12px 0;
-        }
-
-        .contact-logistics address {
-          font-style: normal;
-          font-size: 13px;
-          line-height: 1.9;
-          color: var(--secondary);
-          max-width: 460px;
-        }
-
-        .contact-logistics p {
-          font-size: 12px;
-          margin: 10px 0;
-        }
-
-        .contact-time {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-          margin-top: 16px;
-          font-size: 14px;
-        }
-
-        .contact-time b {
-          display: block;
-          font-weight: 400;
-          color: var(--accent);
-          font-size: 10px;
-          margin-top: 5px;
-        }
-
-        .contact-visit {
-          background: var(--primary);
-          color: var(--background);
-          padding: 50px;
-          display: grid;
-          grid-template-columns: 1.1fr 1fr;
-          gap: 70px;
-          border-radius: 4px;
-        }
-
-        .contact-visit p {
-          color: #ffffff9c;
-          font-size: 12px;
-        }
-
-        .contact-visit h2 {
-          font-size: 44px;
-        }
-
-        .contact-light {
-          background: var(--background);
-          color: var(--primary);
-          margin-top: 18px;
-        }
-
-        .contact-visit ol {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          align-self: center;
-        }
-
-        .contact-visit li {
-          display: flex;
-          gap: 24px;
-          padding: 20px 0;
-          border-bottom: 1px solid #ffffff1a;
-        }
-
-        .contact-visit li:last-child {
-          border-bottom: 0;
-        }
-
-        .contact-visit li > span {
-          color: var(--accent);
-          font: italic 20px Georgia, serif;
-          padding-top: 7px;
-        }
-
-        .contact-visit li h3 {
-          font-size: 21px;
-          margin: 0 0 5px;
-        }
-
-        .contact-visit li p {
-          font-size: 11px;
-          margin: 0;
-        }
-
-        .contact-map-section {
-          margin: 70px 0;
-        }
-
-        .contact-map {
-          height: 400px;
-          position: relative;
-          border: 1px solid var(--border);
-          overflow: hidden;
-          background: var(--surface-muted);
-        }
-
-        .contact-map-placeholder {
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          padding: 30px;
-          background:
-            linear-gradient(
-              90deg,
-              #a58b650b 1px,
-              transparent 1px
-            ),
-            linear-gradient(#a58b650b 1px, transparent 1px);
-          background-size: 45px 45px;
-        }
-
-        .contact-map-pin {
-          background: var(--surface);
-          padding: 16px;
-          border: 1px solid var(--border);
-          border-radius: 50%;
-          margin-bottom: 18px;
-          color: var(--accent);
-        }
-
-        .contact-map-placeholder h3 {
-          margin: 10px 0;
-          font-size: 28px;
-        }
-
-        .contact-map-placeholder p {
-          font-size: 11px;
-          max-width: 360px;
-          margin: 0 0 20px;
-        }
-
-        .contact-map iframe {
-          width: 100%;
-          height: 100%;
-          border: 0;
-        }
-
-        .contact-map-external {
-          position: absolute;
-          bottom: 16px;
-          right: 16px;
-          background: var(--surface);
-          color: var(--primary);
-          padding: 12px 18px;
-          font-size: 11px;
-          box-shadow: 0 3px 20px #0002;
-        }
-
-        .contact-form-section {
-          display: grid;
-          grid-template-columns: 0.8fr 1.2fr;
-          gap: 75px;
-          padding: 55px 0 65px;
-          border-top: 1px solid var(--border);
-          scroll-margin-top: 105px;
-        }
-
-        .contact-form-section h2 {
-          font-size: 48px;
-        }
-
-        .contact-form-section > div > p {
-          max-width: 340px;
-          font-size: 12px;
-        }
-
-        .contact-form-note {
-          display: flex;
-          gap: 15px;
-          align-items: center;
-          border-top: 1px solid var(--border);
-          padding-top: 22px;
-          margin-top: 35px;
-          color: var(--accent);
-        }
-
-        .contact-form-note span {
-          font-size: 10px;
-          color: var(--secondary);
-        }
-
-        .contact-form-note a {
-          display: block;
-          color: var(--primary);
-          margin-top: 8px;
-          overflow-wrap: anywhere;
-        }
-
-        .contact-form {
-          padding: 30px;
-          background: var(--surface);
-          border: 1px solid var(--border);
-        }
-
-        .contact-fields {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 23px;
-          margin-bottom: 25px;
-        }
-
-        .contact-form label {
-          font-size: 10px;
-          color: var(--primary);
-        }
-
-        .contact-form label > span {
-          color: var(--accent);
-        }
-
-        .contact-form input,
-        .contact-form select,
-        .contact-form textarea {
-          display: block;
-          width: 100%;
-          border: 0;
-          border-bottom: 1px solid var(--border);
-          background: transparent;
-          color: var(--primary);
-          padding: 12px 0;
-          font-family: inherit;
-          font-size: 12px;
-          line-height: 1.5;
-          border-radius: 0;
-          outline: none;
-        }
-
-        .contact-form input:focus,
-        .contact-form select:focus,
-        .contact-form textarea:focus {
-          border-color: var(--accent);
-          box-shadow: 0 1px 0 var(--accent);
-        }
-
-        .contact-form textarea {
-          resize: vertical;
-          min-height: 120px;
-        }
-
-        .contact-form input::placeholder,
-        .contact-form textarea::placeholder {
-          color: var(--secondary);
-          opacity: 0.7;
-        }
-
-        .contact-form .contact-form-hint {
-          font-size: 10px;
-          margin: 17px 0 22px;
-        }
-
-        .contact-form-status {
-          font-size: 11px !important;
-          margin: 15px 0 0 !important;
-        }
-
-        .contact-form-status:empty {
-          display: none;
-        }
-
-        .contact-social {
-          display: flex;
-          justify-content: space-between;
-          gap: 40px;
-          align-items: center;
-          border-top: 1px solid var(--border);
-          padding: 45px 0 65px;
-        }
-
-        .contact-social h2 {
-          font-size: 34px;
-        }
-
-        .contact-social p {
-          font-size: 11px;
-        }
-
-        .contact-social-links {
-          max-width: 370px;
-        }
-
-        .contact-social-links > div {
-          padding-left: 25px;
-          border-left: 1px solid var(--border);
-        }
-
-        .contact-social-links a {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 25px;
-          font-size: 11px;
-          margin-top: 12px;
-        }
-
-        .contact-page :is(a, button):focus-visible {
-          outline: 2px solid var(--accent);
-          outline-offset: 5px;
-        }
-
-        .contact-page:lang(zh-CN) h1 {
-          font-size: clamp(36px, 4.3vw, 59px);
-          line-height: 1.35;
-          letter-spacing: 0.01em;
-        }
-
-        .contact-page:lang(zh-CN) em {
-          font-style: normal;
-        }
-
-        .contact-page:lang(zh-CN) h2 {
-          line-height: 1.4;
-        }
-
-        .contact-page:lang(zh-CN) h3 {
-          line-height: 1.5;
-        }
-
-        @media (max-width: 1000px) {
-          .contact-hero-grid {
-            gap: 25px;
-          }
-
-          .contact-art-center i {
-            font-size: 22px;
-          }
-
-          .contact-method-grid {
-            gap: 12px;
-          }
-
-          .contact-method {
-            padding: 28px 18px;
-          }
-
-          .contact-logistics,
-          .contact-visit,
-          .contact-form-section {
-            gap: 35px;
-          }
-
-          .contact-visit {
-            padding: 35px;
-          }
-        }
-
-        @media (max-width: 720px) {
-          .contact-wrap {
-            padding-left: 20px;
-            padding-right: 20px;
-          }
-
-          .contact-hero-grid {
-            grid-template-columns: 1fr;
-            padding: 42px 0 38px;
-            gap: 28px;
-          }
-
-          .contact-hero-art {
-            max-width: 250px;
-          }
-
-          .contact-hero h1 {
-            font-size: 49px;
-          }
-
-          .contact-art-center {
-            inset: 18% 15%;
-            padding: 18px;
-          }
-
-          .contact-art-center i {
-            font-size: 23px;
-          }
-
-          .contact-hero-bottom {
-            font-size: 7px;
-            gap: 20px;
-            line-height: 1.8;
-          }
-
-          .contact-content {
-            padding-top: 45px;
-          }
-
-          .contact-section-head {
-            display: block;
-          }
-
-          .contact-section-head > p {
-            margin-top: 15px;
-          }
-
-          .contact-method-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .contact-method {
-            border-radius: 40px 40px 5px 5px;
-            padding: 25px;
-          }
-
-          .contact-card-top {
-            margin-bottom: 20px;
-          }
-
-          .contact-method p {
-            min-height: 0;
-          }
-
-          .contact-email {
-            font-size: 17px;
-          }
-
-          .contact-logistics {
-            grid-template-columns: 1fr;
-            gap: 35px;
-            margin: 40px 0;
-          }
-
-          .contact-availability {
-            padding-top: 30px;
-            border-top: 1px solid var(--border);
-          }
-
-          .contact-visit {
-            grid-template-columns: 1fr;
-            padding: 30px 24px;
-            gap: 25px;
-          }
-
-          .contact-visit h2 {
-            font-size: 38px;
-          }
-
-          .contact-map-section {
-            margin: 45px 0;
-          }
-
-          .contact-map {
-            height: 410px;
-          }
-
-          .contact-form-section {
-            grid-template-columns: 1fr;
-            padding: 40px 0;
-            gap: 30px;
-          }
-
-          .contact-form-section h2 {
-            font-size: 42px;
-          }
-
-          .contact-form {
-            padding: 24px 20px;
-          }
-
-          .contact-fields {
-            grid-template-columns: 1fr;
-            gap: 20px;
-          }
-
-          .contact-social {
-            align-items: start;
-            flex-direction: column;
-            gap: 20px;
-            padding-bottom: 45px;
-          }
-
-          .contact-social-links > div {
-            padding-left: 0;
-            border-left: 0;
-          }
-
-          .contact-social h2 {
-            font-size: 30px;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .contact-page * {
-            transition: none !important;
-          }
-
-          .contact-button:hover,
-          .contact-method:hover {
-            transform: none;
-          }
-        }
-      `}</style>
     </div>
   );
 }

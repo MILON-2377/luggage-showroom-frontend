@@ -2,6 +2,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { ArrowDown, ArrowUpRight, Pause, Play } from "lucide-react";
+import { Button, buttonVariants } from "@/src/components/ui/button";
+const heroSerif = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"], style: ["normal", "italic"], display: "swap", variable: "--hero-serif" });
+const heroSans = Manrope({ subsets: ["latin"], weight: ["400", "500", "600"], display: "swap", variable: "--hero-sans" });
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
@@ -317,6 +323,8 @@ export default function HeroBanner() {
   const [selectedFinish, setSelectedFinish] = useState(FINISHES[0]);
   const [autoRotate, setAutoRotate] = useState(true);
   const [webglError, setWebglError] = useState(false);
+  const [previewReady, setPreviewReady] = useState(false);
+  const [sceneReady, setSceneReady] = useState(false);
 
   useEffect(() => {
     const container = stageRef.current;
@@ -496,6 +504,7 @@ export default function HeroBanner() {
     container.addEventListener("pointermove", handlePointerMove);
     container.addEventListener("pointerleave", handlePointerLeave);
 
+    let hasRendered = false;
     const animate = () => {
       if (isDisposed) return;
 
@@ -551,6 +560,7 @@ export default function HeroBanner() {
         -0.02 + Math.sin(time * 1.2) * 0.018;
 
       renderer.render(scene, camera);
+      if (!hasRendered) { hasRendered = true; setSceneReady(true); }
     };
 
     animate();
@@ -619,538 +629,103 @@ export default function HeroBanner() {
   }, [selectedFinish]);
 
   return (
-    <main>
-      <section className="hero">
-        <div className="heroType">
-          <div className="eyebrow">
-            <span className="eyebrowDot" />
-            SCULPTED TO BE REMEMBERED
-          </div>
+    <section className={`${heroSerif.variable} ${heroSans.variable} relative grid min-h-[690px] grid-cols-[46%_54%] overflow-hidden bg-[radial-gradient(ellipse_at_70%_30%,#58313c_0%,#2c1b22_48%,#20171b_90%)] px-[5%] pb-[65px] text-[#f2e8d9] [font-family:var(--hero-sans),sans-serif] max-[1000px]:min-h-[670px] max-[700px]:min-h-0 max-[700px]:grid-cols-1 max-[700px]:px-[6%] max-[700px]:pb-[75px]`}>
+      <div className="relative z-2 pt-[85px] pb-[50px] max-[1000px]:pt-[100px] max-[700px]:pt-[65px] max-[700px]:pb-[10px]">
+        <div className="flex items-center gap-[10px] text-[9px] tracking-[2.5px] text-[#d7b69d]">
+          <span aria-hidden="true" className="size-[6px] rounded-full bg-[#c49a75]" />
+          SCULPTED TO BE REMEMBERED
+        </div>
+        <h1 className="mt-12 mb-[22px] text-[clamp(76px,8.3vw,122px)] leading-[0.86] font-normal tracking-[-4px] [font-family:var(--hero-serif),serif] max-[700px]:mt-[35px] max-[700px]:text-[90px] max-[380px]:text-[76px]">
+          The art<br />of <em className="font-normal text-[#d6b69b]">carrying.</em>
+        </h1>
+        <p className="my-[30px] text-xs leading-[2] tracking-[0.3px] text-[#c3ada3] max-[700px]:text-[11px]">
+          Quiet confidence. Unmistakable presence.<br />Objects of desire, designed around you.
+        </p>
+        <div className="mt-[35px] flex flex-wrap items-center gap-7 max-[700px]:gap-[18px]">
+          <a href="#collection" className={buttonVariants({variant:"secondary",className:"h-auto gap-[25px] rounded-none bg-[#e7d8c6] px-[21px] py-4 text-[10px] font-normal text-[#2b1d21] hover:bg-white"})}>
+            Discover the collection <ArrowUpRight aria-hidden="true" className="size-3" />
+          </a>
+          <a href="#atelier" className={buttonVariants({variant:"link",className:"h-auto gap-1 rounded-none p-0 text-[10px] font-normal text-[#e5d1bd]"})}>
+            Create with us <ArrowUpRight aria-hidden="true" className="size-3" />
+          </a>
+        </div>
+        <div className="mt-[90px] flex items-center gap-[17px] text-[8px] tracking-[2px] text-[#ad9389] max-[700px]:mt-10">
+          <span>01 — 04</span><div aria-hidden="true" className="h-px w-[65px] bg-[#856c66]" /><span>THE FORME SIGNATURE</span>
+        </div>
+      </div>
 
-          <h1>
-            The art
-            <br />
-            of <em>carrying.</em>
-          </h1>
-
-          <p className="description">
-            Quiet confidence. Unmistakable presence.
-            <br />
-            Objects of desire, designed around you.
-          </p>
-
-          <div className="heroLinks">
-            <a href="#collection" className="primaryButton">
-              Discover the collection <span>↗</span>
-            </a>
-
-            <a href="#atelier" className="textLink">
-              Create with us ↗
-            </a>
-          </div>
-
-          <div className="edition">
-            <span>01 — 04</span>
-            <div />
-            <span>THE FORME SIGNATURE</span>
-          </div>
+      <div className="relative isolate min-w-0 max-[700px]:h-[460px] max-[380px]:h-[390px]">
+        <div aria-hidden="true" className="absolute inset-x-0 top-[12%] bottom-[6%] rounded-[50%] border border-[#bb8c6c27]" />
+        <div aria-hidden="true" className="pointer-events-none absolute top-[25%] left-[4%] text-[150px] tracking-[7px] text-[#e6bc9b08] [font-family:var(--hero-serif),serif] max-[700px]:top-[22%] max-[700px]:left-0 max-[700px]:text-[100px]">FORME</div>
+        <div className="pointer-events-none absolute top-8 right-0 left-[12%] z-2 flex justify-between text-[7px] tracking-[1.8px] text-[#b49689] max-[700px]:top-5 max-[700px]:left-0">
+          <span>THE SIGNATURE / 01</span><span>LIVE 3D OBJECT</span>
         </div>
 
-        <div className="heroStage">
-          <div className="halo" />
-
-          <div className="stageWord">FORME</div>
-
-          <div className="stageTop">
-            <span>THE SIGNATURE / 01</span>
-            <span>LIVE 3D OBJECT</span>
-          </div>
-
-          <div
-            ref={stageRef}
-            className="model"
-            role="img"
-            aria-label="Interactive 3D handbag. Move your mouse to rotate."
-          >
-            {webglError && (
-              <div className="webglFallback">
-                <p>3D preview is unavailable.</p>
-                <span>
-                  Please enable WebGL in your browser.
-                </span>
-              </div>
-            )}
-          </div>
-
-          <div className="annotation">
-            <span>01 / THE SILHOUETTE</span>
-            <p>
-              Soft geometry.
-              <br />
-              Strong character.
-            </p>
-          </div>
-
-          <div className="stageControls">
-            <div className="finishSelector">
-              <span className="micro">SELECT A FINISH</span>
-
-              <div className="finishes">
-                {FINISHES.map((finish) => (
-                  <button
-                    key={finish.name}
-                    type="button"
-                    className={
-                      selectedFinish.name === finish.name
-                        ? "selected"
-                        : ""
-                    }
-                    style={
-                      {
-                        "--swatch": finish.color,
-                      } as React.CSSProperties
-                    }
-                    aria-label={`${finish.name} finish`}
-                    aria-pressed={
-                      selectedFinish.name === finish.name
-                    }
-                    onClick={() => setSelectedFinish(finish)}
-                  />
-                ))}
-              </div>
-
-              <span className="finishName">
-                {selectedFinish.name} / Champagne hardware
-              </span>
+        <div
+          ref={stageRef}
+          data-scene-ready={sceneReady ? "true" : "false"}
+          role="img"
+          aria-label="Interactive 3D handbag. Move your mouse to rotate."
+          className="absolute top-[15px] right-[-45px] bottom-[25px] left-[-45px] z-1 touch-pan-y cursor-crosshair max-[700px]:top-0 max-[700px]:right-[-20px] max-[700px]:left-[-20px] [&>canvas]:block [&>canvas]:h-full [&>canvas]:w-full [&>canvas]:opacity-0 [&>canvas]:transition-opacity [&>canvas]:duration-200 data-[scene-ready=true]:[&>canvas]:opacity-100 motion-reduce:[&>canvas]:transition-none"
+        >
+          <Image
+            src="/hero-bag-preview.png"
+            alt=""
+            fill
+            preload
+            sizes="(max-width: 700px) 100vw, 60vw"
+            onLoad={() => setPreviewReady(true)}
+            onError={() => setPreviewReady(false)}
+            className="pointer-events-none z-2 border-0 object-contain outline-none transition-opacity duration-200 motion-reduce:transition-none"
+            style={{ opacity: previewReady && !sceneReady ? 1 : 0 }}
+          />
+          {webglError && (
+            <div className="pointer-events-none absolute inset-x-0 bottom-14 z-3 text-center text-[#f2e8d9]">
+              <p className="text-xl [font-family:var(--hero-serif),serif]">3D preview is unavailable.</p>
+              <span className="text-[11px] text-[#c3ada3]">Please enable WebGL in your browser.</span>
             </div>
+          )}
+        </div>
 
-            <button
-              type="button"
-              className="rotateButton"
-              onClick={() => setAutoRotate((value) => !value)}
-              aria-pressed={autoRotate}
-            >
-              ↔ &nbsp;
-              Auto rotation {autoRotate ? "on" : "off"}
-              <span>360°</span>
-            </button>
+        <div className="pointer-events-none absolute top-[38%] right-[-10px] z-2 max-[1000px]:hidden">
+          <span className="text-[7px] tracking-[1.5px] text-[#c4a18b]">01 / THE SILHOUETTE</span>
+          <p className="text-[21px] leading-[1.2] text-[#e7d5c7] [font-family:var(--hero-serif),serif]">Soft geometry.<br />Strong character.</p>
+        </div>
+        <div className="absolute right-0 bottom-[15px] left-[12%] z-3 flex items-end justify-between gap-5 max-[1000px]:left-0 max-[700px]:bottom-0 max-[380px]:gap-2">
+          <div>
+            <span className="text-[7px] tracking-[1.8px] text-[#bda395]">SELECT A FINISH</span>
+            <div className="my-[14px] flex gap-3">
+              {FINISHES.map(finish => (
+                <Button
+                  key={finish.name}
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`${finish.name} finish`}
+                  aria-pressed={selectedFinish.name === finish.name}
+                  onClick={() => setSelectedFinish(finish)}
+                  style={{ backgroundColor: finish.color }}
+                  className={`relative size-[17px] rounded-full border border-white/20 p-0 ${selectedFinish.name === finish.name ? "after:absolute after:-inset-[5px] after:rounded-full after:border after:border-[#c7a98a] after:content-['']" : ""}`}
+                />
+              ))}
+            </div>
+            <span className="text-[8px] text-[#c6aa9b]">{selectedFinish.name} / Champagne hardware</span>
           </div>
+          <Button
+            variant="ghost"
+            aria-pressed={autoRotate}
+            onClick={() => setAutoRotate(value => !value)}
+            className="h-auto shrink-0 gap-1 rounded-none border-0 bg-transparent px-0 py-[10px] text-[8px] font-normal text-[#e4d1c2] max-[380px]:text-[7px]"
+          >
+            {autoRotate ? <Pause className="size-3" aria-hidden="true" /> : <Play className="size-3" aria-hidden="true" />}
+            Auto rotation {autoRotate ? "on" : "off"}<span className="ml-2.5 text-[#c39c7e]">360°</span>
+          </Button>
         </div>
-
-        <div className="heroBottom">
-          <span>CONSIDERED IN EVERY DETAIL.</span>
-          <a href="#collection">SCROLL TO DISCOVER ↓</a>
-          <span>DESIGN · MATERIAL · FORM</span>
-        </div>
-      </section>
-
-      <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Manrope:wght@400;500;600&display=swap");
-
-        * {
-          box-sizing: border-box;
-        }
-
-        html {
-          scroll-behavior: smooth;
-        }
-
-        body {
-          margin: 0;
-          background: #20171b;
-        }
-
-        .hero {
-          position: relative;
-          display: grid;
-          grid-template-columns: 46% 54%;
-          min-height: 690px;
-          padding: 0 5% 65px;
-          overflow: hidden;
-          color: #f2e8d9;
-          background:
-            radial-gradient(
-              ellipse at 70% 30%,
-              #58313c 0%,
-              #2c1b22 48%,
-              #20171b 90%
-            );
-          font-family: "Manrope", sans-serif;
-        }
-
-        .heroType {
-          position: relative;
-          z-index: 2;
-          padding: 85px 0 50px;
-        }
-
-        .eyebrow {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          color: #d7b69d;
-          font-size: 9px;
-          letter-spacing: 2.5px;
-        }
-
-        .eyebrowDot {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: #c49a75;
-        }
-
-        .heroType h1 {
-          margin: 48px 0 22px;
-          font-family: "Cormorant Garamond", serif;
-          font-size: clamp(76px, 8.3vw, 122px);
-          font-weight: 400;
-          line-height: 0.86;
-          letter-spacing: -4px;
-        }
-
-        .heroType h1 em {
-          color: #d6b69b;
-          font-weight: 400;
-        }
-
-        .description {
-          margin: 30px 0;
-          color: #c3ada3;
-          font-size: 12px;
-          line-height: 2;
-          letter-spacing: 0.3px;
-        }
-
-        .heroLinks {
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 28px;
-          margin-top: 35px;
-        }
-
-        .primaryButton {
-          display: inline-flex;
-          align-items: center;
-          gap: 25px;
-          padding: 16px 21px;
-          background: #e7d8c6;
-          color: #2b1d21;
-          text-decoration: none;
-          font-size: 10px;
-          transition: background 0.3s;
-        }
-
-        .primaryButton:hover {
-          background: #ffffff;
-        }
-
-        .textLink {
-          color: #e5d1bd;
-          font-size: 10px;
-          text-decoration: none;
-        }
-
-        .edition {
-          display: flex;
-          align-items: center;
-          gap: 17px;
-          margin-top: 90px;
-          color: #ad9389;
-          font-size: 8px;
-          letter-spacing: 2px;
-        }
-
-        .edition div {
-          width: 65px;
-          height: 1px;
-          background: #856c66;
-        }
-
-        .heroStage {
-          position: relative;
-          min-width: 0;
-          isolation: isolate;
-        }
-
-        .halo {
-          position: absolute;
-          inset: 12% 0 6%;
-          border: 1px solid #bb8c6c27;
-          border-radius: 50%;
-        }
-
-        .stageWord {
-          position: absolute;
-          top: 25%;
-          left: 4%;
-          color: #e6bc9b08;
-          font-family: "Cormorant Garamond", serif;
-          font-size: 150px;
-          letter-spacing: 7px;
-          pointer-events: none;
-        }
-
-        .model {
-          position: absolute;
-          inset: 15px -45px 25px;
-          cursor: crosshair;
-          touch-action: pan-y;
-          z-index: 1;
-        }
-
-        .model canvas {
-          display: block;
-          width: 100%;
-          height: 100%;
-        }
-
-        .webglFallback {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          color: #f2e8d9;
-          text-align: center;
-        }
-
-        .webglFallback p {
-          font-family: "Cormorant Garamond", serif;
-          font-size: 28px;
-        }
-
-        .webglFallback span {
-          font-size: 11px;
-          color: #c3ada3;
-        }
-
-        .stageTop {
-          position: absolute;
-          top: 32px;
-          left: 12%;
-          right: 0;
-          display: flex;
-          justify-content: space-between;
-          color: #b49689;
-          font-size: 7px;
-          letter-spacing: 1.8px;
-          pointer-events: none;
-          z-index: 2;
-        }
-
-        .annotation {
-          position: absolute;
-          top: 38%;
-          right: -10px;
-          pointer-events: none;
-          z-index: 2;
-        }
-
-        .annotation span {
-          color: #c4a18b;
-          font-size: 7px;
-          letter-spacing: 1.5px;
-        }
-
-        .annotation p {
-          color: #e7d5c7;
-          font-family: "Cormorant Garamond", serif;
-          font-size: 21px;
-          line-height: 1.2;
-        }
-
-        .stageControls {
-          position: absolute;
-          bottom: 15px;
-          left: 12%;
-          right: 0;
-          display: flex;
-          justify-content: space-between;
-          align-items: end;
-          gap: 20px;
-          z-index: 3;
-        }
-
-        .micro {
-          color: #bda395;
-          font-size: 7px;
-          letter-spacing: 1.8px;
-        }
-
-        .finishes {
-          display: flex;
-          gap: 12px;
-          margin: 14px 0;
-        }
-
-        .finishes button {
-          position: relative;
-          width: 17px;
-          height: 17px;
-          padding: 0;
-          border: 1px solid #ffffff33;
-          border-radius: 50%;
-          background: var(--swatch);
-          cursor: pointer;
-        }
-
-        .finishes button.selected::after {
-          position: absolute;
-          inset: -5px;
-          border: 1px solid #c7a98a;
-          border-radius: 50%;
-          content: "";
-        }
-
-        .finishName {
-          color: #c6aa9b;
-          font-size: 8px;
-        }
-
-        .rotateButton {
-          padding: 10px 0;
-          border: 0;
-          background: transparent;
-          color: #e4d1c2;
-          font-family: inherit;
-          font-size: 8px;
-          cursor: pointer;
-          white-space: nowrap;
-        }
-
-        .rotateButton span {
-          margin-left: 10px;
-          color: #c39c7e;
-        }
-
-        .heroBottom {
-          position: absolute;
-          right: 5%;
-          bottom: 23px;
-          left: 5%;
-          display: flex;
-          justify-content: space-between;
-          color: #927a72;
-          font-size: 7px;
-          letter-spacing: 2px;
-          z-index: 4;
-        }
-
-        .heroBottom a {
-          color: #d4bdac;
-          text-decoration: none;
-        }
-
-        @media (max-width: 1000px) {
-          .hero {
-            min-height: 670px;
-          }
-
-          .heroType {
-            padding-top: 100px;
-          }
-
-          .stageControls {
-            left: 0;
-          }
-
-          .annotation {
-            display: none;
-          }
-        }
-
-        @media (max-width: 700px) {
-          .hero {
-            grid-template-columns: 1fr;
-            min-height: auto;
-            padding: 0 6% 75px;
-          }
-
-          .heroType {
-            padding: 65px 0 10px;
-          }
-
-          .heroType h1 {
-            margin-top: 35px;
-            font-size: 90px;
-          }
-
-          .description {
-            font-size: 11px;
-          }
-
-          .edition {
-            margin-top: 40px;
-          }
-
-          .heroStage {
-            height: 460px;
-            margin-top: 0;
-          }
-
-          .model {
-            inset: 0 -20px 25px;
-          }
-
-          .stageWord {
-            top: 22%;
-            left: 0;
-            font-size: 100px;
-          }
-
-          .stageTop {
-            top: 20px;
-            left: 0;
-          }
-
-          .stageControls {
-            right: 0;
-            bottom: 0;
-            left: 0;
-          }
-
-          .heroBottom {
-            right: 6%;
-            bottom: 20px;
-            left: 6%;
-          }
-
-          .heroBottom span:last-child {
-            display: none;
-          }
-
-          .heroLinks {
-            gap: 18px;
-          }
-        }
-
-        @media (max-width: 380px) {
-          .heroType h1 {
-            font-size: 76px;
-          }
-
-          .heroStage {
-            height: 390px;
-          }
-
-          .stageControls {
-            gap: 8px;
-          }
-
-          .rotateButton {
-            font-size: 7px;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          html {
-            scroll-behavior: auto;
-          }
-        }
-      `}</style>
-    </main>
+      </div>
+      <div className="absolute right-[5%] bottom-[23px] left-[5%] z-4 flex justify-between gap-3 text-[7px] tracking-[2px] text-[#927a72] max-[700px]:right-[6%] max-[700px]:bottom-5 max-[700px]:left-[6%]">
+        <span>CONSIDERED IN EVERY DETAIL.</span>
+        <a href="#collection" className="inline-flex items-center gap-1 text-[#d4bdac]">SCROLL TO DISCOVER <ArrowDown className="size-3" aria-hidden="true" /></a>
+        <span className="max-[700px]:hidden">DESIGN · MATERIAL · FORM</span>
+      </div>
+    </section>
   );
 }
