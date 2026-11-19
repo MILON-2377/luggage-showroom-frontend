@@ -8,12 +8,12 @@ export default function ManufacturingHero({
   data,
 }: CopyProps & { data: ManufacturingData }) {
   return (
-    <section className="relative isolate overflow-hidden bg-[#1b1a17] px-5 pb-16 pt-14 text-[#f2eadb] sm:px-8 lg:pb-24 lg:pt-20">
+    <section className="relative isolate overflow-hidden bg-[#1b1a17] px-3 pb-16 pt-14 text-[#f2eadb] sm:px-5 lg:px-6 lg:pb-24 lg:pt-20">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_50%,rgba(194,158,94,0.14),transparent_70%)]"
       />
-      <div className="mx-auto max-w-[1560px]">
+      <div className="mx-auto w-full max-w-none">
         <div className="grid items-end gap-8 lg:grid-cols-[1.2fr_0.8fr]">
           <div>
             <p className="text-sm tracking-[0.14em] text-[#d4b980]">
@@ -48,7 +48,7 @@ export default function ManufacturingHero({
             </div>
           </div>
         </div>
-        <div className="mt-12 pr-2 pb-3">
+        <div className="mt-12 w-full pr-2 pb-3">
           <ManufacturingHeroScene copy={copy} photos={data.photos} />
         </div>
         <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-[#ccb17b]/15 pt-6 text-sm text-[#bfae8c]">
