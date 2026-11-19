@@ -1,7 +1,8 @@
-import React from 'react'
+import SearchSection from "@/src/feature/public/search/components/SearchSection";
 
-export default function CategoryDetailsPage() {
-  return (
-    <div>CategoryDetailsPage</div>
-  )
+export default function SearchPage() {
+  <p>Hello
+    
+  </p>
+  return ;
 }
