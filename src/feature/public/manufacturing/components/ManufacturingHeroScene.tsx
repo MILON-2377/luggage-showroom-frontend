@@ -1,10 +1,14 @@
-
-
-
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Factory, Images, Pause, Play } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Factory,
+  Images,
+  Pause,
+  Play,
+} from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import type { CopyProps, ProductPhoto } from "../types/manufacturing.types";
 import { getWorkshopTimeline, smoothStep } from "./workshop-timeline";
@@ -33,7 +37,150 @@ const GIRL_FRAMES: SpriteFrame[] = [
   { sx: 964, sy: 8, sw: 247, sh: 712, foot: 131.8056628056628 },
   { sx: 1637, sy: 9, sw: 398, sh: 712, foot: 126.20915108582045 },
 ];
+interface StorageFrame extends SpriteFrame {
+  handX: number;
+  handY: number;
+}
+const STORAGE_FRAMES: StorageFrame[] = [
+  {
+    sx: 216,
+    sy: 15,
+    sw: 386,
+    sh: 699,
+    foot: 132.23055004955404,
+    handX: 560,
+    handY: 192,
+  },
+  {
+    sx: 928,
+    sy: 69,
+    sw: 374,
+    sh: 644,
+    foot: 111.70196078431371,
+    handX: 1260,
+    handY: 395,
+  },
+  {
+    sx: 1612,
+    sy: 230,
+    sw: 377,
+    sh: 483,
+    foot: 123.07015959048476,
+    handX: 1950,
+    handY: 588,
+  },
+];
+
 const lerp = (from: number, to: number, t: number) => from + (to - from) * t;
+
+// Render once per translated company name, then composite it onto the back wall.
+const wallSigns = new Map<string, HTMLCanvasElement>();
+function drawCompanyWallSign(context: CanvasRenderingContext2D, name: string) {
+  let sign = wallSigns.get(name);
+  if (!sign) {
+    sign = document.createElement("canvas");
+    sign.width = 1100;
+    sign.height = 140;
+    const paint = sign.getContext("2d");
+    if (!paint) return;
+    const rounded = (x: number, y: number, w: number, h: number, r: number) => {
+      paint.beginPath();
+      paint.moveTo(x + r, y);
+      paint.lineTo(x + w - r, y);
+      paint.quadraticCurveTo(x + w, y, x + w, y + r);
+      paint.lineTo(x + w, y + h - r);
+      paint.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      paint.lineTo(x + r, y + h);
+      paint.quadraticCurveTo(x, y + h, x, y + h - r);
+      paint.lineTo(x, y + r);
+      paint.quadraticCurveTo(x, y, x + r, y);
+      paint.closePath();
+    };
+    // Wall shadow and a narrow bronze mounting edge.
+    paint.shadowColor = "rgba(0,0,0,0.65)";
+    paint.shadowBlur = 11;
+    paint.shadowOffsetY = 7;
+    rounded(23, 19, 1054, 99, 11);
+    paint.fillStyle = "#594329";
+    paint.fill();
+    paint.shadowColor = "transparent";
+    const plate = paint.createLinearGradient(0, 14, 0, 112);
+    plate.addColorStop(0, "#484035");
+    plate.addColorStop(0.45, "#302b24");
+    plate.addColorStop(1, "#25211c");
+    rounded(19, 14, 1054, 98, 11);
+    paint.fillStyle = plate;
+    paint.fill();
+    paint.strokeStyle = "rgba(221,191,139,0.65)";
+    paint.lineWidth = 1.2;
+    paint.stroke();
+    rounded(24, 19, 1044, 88, 8);
+    paint.strokeStyle = "rgba(255,235,194,0.12)";
+    paint.lineWidth = 0.8;
+    paint.stroke();
+    let size = 50;
+    const font = () =>
+      "600 " +
+      size +
+      'px Georgia, "Noto Serif SC", "Songti SC", "SimSun", serif';
+    paint.font = font();
+    while (paint.measureText(name).width > 940 && size > 24) {
+      size--;
+      paint.font = font();
+    }
+    paint.textAlign = "center";
+    paint.textBaseline = "middle";
+    // Cast shadow, solid letter depth, then a brushed champagne-gold face.
+    paint.shadowColor = "rgba(0,0,0,0.8)";
+    paint.shadowBlur = 5;
+    paint.shadowOffsetX = 2;
+    paint.shadowOffsetY = 5;
+    paint.fillStyle = "#241a10";
+    paint.fillText(name, 550, 66);
+    paint.shadowColor = "transparent";
+    for (let depth = 5; depth > 0; depth--) {
+      paint.fillStyle = depth > 2 ? "#70512c" : "#a47d43";
+      paint.fillText(name, 550 + depth * 0.45, 62 + depth);
+    }
+    const metal = paint.createLinearGradient(0, 34, 0, 89);
+    metal.addColorStop(0, "#fff3d2");
+    metal.addColorStop(0.36, "#ead4a4");
+    metal.addColorStop(0.52, "#b28a4c");
+    metal.addColorStop(0.72, "#f1d9a3");
+    metal.addColorStop(1, "#9c743d");
+    paint.fillStyle = metal;
+    paint.fillText(name, 550, 62);
+    paint.strokeStyle = "rgba(255,244,215,0.48)";
+    paint.lineWidth = 0.45;
+    paint.strokeText(name, 550, 62);
+    // Small mounting bolts and a restrained inset line finish the physical sign.
+    for (const x of [38, 1054])
+      for (const y of [32, 96]) {
+        const bolt = paint.createRadialGradient(x - 1, y - 1, 0, x, y, 3.5);
+        bolt.addColorStop(0, "#f9e9c1");
+        bolt.addColorStop(0.5, "#b39762");
+        bolt.addColorStop(1, "#4f3a21");
+        paint.beginPath();
+        paint.arc(x, y, 3.2, 0, Math.PI * 2);
+        paint.fillStyle = bolt;
+        paint.fill();
+      }
+    const rule = paint.createLinearGradient(430, 0, 670, 0);
+    rule.addColorStop(0, "transparent");
+    rule.addColorStop(0.5, "rgba(226,197,143,0.65)");
+    rule.addColorStop(1, "transparent");
+    paint.fillStyle = rule;
+    paint.fillRect(430, 99, 240, 1);
+    wallSigns.set(name, sign);
+  }
+  context.save();
+  context.drawImage(
+    sign,
+    ART_WIDTH * 0.51 - sign.width / 2,
+    ART_HEIGHT * 0.065 - sign.height / 2,
+  );
+  context.restore();
+}
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -97,7 +244,8 @@ export default function ManufacturingHeroScene({
 }: CopyProps & { photos: ProductPhoto[] }) {
   const photos = useMemo(() => {
     const source = suppliedPhotos.filter(
-      (photo) => photo.conveyor !== false && !photo.src.includes("product-hero-3d"),
+      (photo) =>
+        photo.conveyor !== false && !photo.src.includes("product-hero-3d"),
     );
     const preferred = ["photo-7", "photo-3", "photo-1"];
     return [
@@ -107,6 +255,10 @@ export default function ManufacturingHeroScene({
       ...source.filter((photo) => !preferred.includes(photo.id)),
     ];
   }, [suppliedPhotos]);
+  const companyNameRef = useRef(copy.company.name);
+  useEffect(() => {
+    companyNameRef.current = copy.company.name;
+  }, [copy.company.name]);
   const canvas = useRef<HTMLCanvasElement>(null),
     time = useRef(0),
     offset = useRef(0),
@@ -158,6 +310,7 @@ export default function ManufacturingHeroScene({
       loadImage(ASSET_ROOT + "workshop.png"),
       loadImage(ASSET_ROOT + "worker-left.png"),
       loadImage(ASSET_ROOT + "worker-right.png"),
+      loadImage(ASSET_ROOT + "worker-storage-levels.png"),
       Promise.all(
         photos.map(async (photo) => {
           try {
@@ -174,7 +327,7 @@ export default function ManufacturingHeroScene({
         }),
       ),
     ])
-      .then(([background, boy, girl, loaded]) => {
+      .then(([background, boy, girl, storageGirl, loaded]) => {
         if (disposed) return;
         const available = loaded.filter(
           (entry): entry is LoadedPhoto => entry !== null,
@@ -199,7 +352,8 @@ export default function ManufacturingHeroScene({
         ) {
           const entry = photoAt(index);
           const ratio = entry.crop.width / entry.crop.height;
-          const width = Math.min(ART_WIDTH * 0.13, ART_HEIGHT * 0.36 * ratio) * scale,
+          const width =
+              Math.min(ART_WIDTH * 0.13, ART_HEIGHT * 0.36 * ratio) * scale,
             height = width / ratio;
           const px = x * ART_WIDTH,
             py = bottom * ART_HEIGHT;
@@ -207,7 +361,15 @@ export default function ManufacturingHeroScene({
           if (shadow) {
             context!.fillStyle = "rgba(35,25,13,0.18)";
             context!.beginPath();
-            context!.ellipse(px, py + 3, width * 0.42, 9 * scale, 0, 0, Math.PI * 2);
+            context!.ellipse(
+              px,
+              py + 3,
+              width * 0.42,
+              9 * scale,
+              0,
+              0,
+              Math.PI * 2,
+            );
             context!.fill();
           }
           context!.translate(px, py);
@@ -243,22 +405,19 @@ export default function ManufacturingHeroScene({
             y = ART_HEIGHT * 0.95 - height;
           context!.save();
           context!.globalAlpha = alpha;
-          if (bend !== 0) {
-            const hipY = ART_HEIGHT * 0.58;
-            context!.save();
-            context!.beginPath();
-            context!.rect(0, hipY, ART_WIDTH, ART_HEIGHT);
-            context!.clip();
-            context!.drawImage(image, f.sx, f.sy, f.sw, f.sh, x, y, width, height);
-            context!.restore();
-            context!.translate(footX * ART_WIDTH, hipY);
-            context!.rotate(bend);
-            context!.translate(-footX * ART_WIDTH, -hipY);
-            context!.beginPath();
-            context!.rect(-ART_WIDTH, -ART_HEIGHT, ART_WIDTH * 3, hipY + ART_HEIGHT);
-            context!.clip();
-          }
-          context!.drawImage(image, f.sx, f.sy, f.sw, f.sh, x, y, width, height);
+          // Keep the complete character intact. A flat sprite cannot bend at the waist.
+          void bend;
+          context!.drawImage(
+            image,
+            f.sx,
+            f.sy,
+            f.sw,
+            f.sh,
+            x,
+            y,
+            width,
+            height,
+          );
           context!.restore();
         }
         function blendPose(
@@ -273,11 +432,66 @@ export default function ManufacturingHeroScene({
           // Pose keyframes remain opaque; no double-exposed character silhouettes.
           drawPose(image, frames, t < 0.5 ? from : to, footX, bend);
         }
+
+        function drawStorageGirl(
+          row: number,
+          column: number,
+          progress: number,
+        ) {
+          if (!element) return;
+          const p = smoothStep(progress);
+          const targetX = (0.888 + column * 0.041) * ART_WIDTH;
+          const targetY = (0.344 + row * 0.111 - 0.035) * ART_HEIGHT;
+          const back = STORAGE_FRAMES[row];
+          const backScale = 0.52;
+          const backFootX =
+            targetX - (back.handX - back.sx - back.foot) * backScale;
+          const backFootY =
+            targetY + (back.sy + back.sh - back.handY) * backScale;
+          const footX = lerp(0.84 * ART_WIDTH, backFootX, p);
+          const footY = lerp(0.95 * ART_HEIGHT, backFootY, p);
+          const scale = lerp(
+            (ART_HEIGHT * 0.86) /
+              Math.max(...GIRL_FRAMES.map((frame) => frame.sh)),
+            backScale,
+            p,
+          );
+          // Each storage pose is a complete body. No waist clipping or rotation.
+          const useStorage = p >= 0.5;
+          const frame = useStorage ? back : GIRL_FRAMES[1];
+          context!.save();
+          context!.drawImage(
+            useStorage ? storageGirl : girl,
+            frame.sx,
+            frame.sy,
+            frame.sw,
+            frame.sh,
+            footX - frame.foot * scale,
+            footY - frame.sh * scale,
+            frame.sw * scale,
+            frame.sh * scale,
+          );
+          context!.restore();
+          if (p === 1) {
+            element.dataset.handX = String(
+              (footX + (back.handX - back.sx - back.foot) * scale) / ART_WIDTH,
+            );
+            element.dataset.handY = String(
+              (footY - (back.sy + back.sh - back.handY) * scale) / ART_HEIGHT,
+            );
+          }
+          element.dataset.storageContact = String(p === 1);
+        }
+
         let lastCycle = -1,
           lastStored = -1;
         draw = () => {
           if (disposed) return;
-          const t = getWorkshopTimeline(time.current, available.length, offset.current);
+          const t = getWorkshopTimeline(
+            time.current,
+            available.length,
+            offset.current,
+          );
           const phase = t.phase;
           context!.setTransform(
             element.width / ART_WIDTH,
@@ -289,6 +503,7 @@ export default function ManufacturingHeroScene({
           );
           context!.clearRect(0, 0, ART_WIDTH, ART_HEIGHT);
           context!.drawImage(background, 0, 0, ART_WIDTH, ART_HEIGHT);
+          drawCompanyWallSign(context!, companyNameRef.current);
           // A subtle moving sheen across the photographed roller bed.
           context!.save();
           context!.beginPath();
@@ -345,30 +560,16 @@ export default function ManufacturingHeroScene({
                     ? 1 - (phase - 5.7) / 0.4
                     : 0;
           blendPose(boy, BOY_FRAMES, 0, 1, boyReach, 0.088);
-          const shelfFoot = 0.79 + (shelfColumn - 1) * 0.014;
+
+          element.dataset.shelfRow = String(shelfRow);
+          element.dataset.shelfColumn = String(shelfColumn);
+          element.dataset.storageContact = "false";
           if (phase < 0.8) blendPose(girl, GIRL_FRAMES, 0, 1, t.pickup, 0.84);
-          else if (phase < 1.3)
-            blendPose(
-              girl,
-              GIRL_FRAMES,
-              1,
-              2,
-              (phase - 0.8) / 0.5,
-              lerp(0.84, shelfFoot, smoothStep((phase - 0.8) / 0.5)),
-              shelfRow * 0.27 * smoothStep((phase - 0.8) / 0.5),
-            );
-          else if (phase < 1.95)
-            drawPose(girl, GIRL_FRAMES, 2, shelfFoot, shelfRow * 0.27);
+          else if (phase < 1.4)
+            drawStorageGirl(shelfRow, shelfColumn, (phase - 0.8) / 0.6);
+          else if (phase < 1.95) drawStorageGirl(shelfRow, shelfColumn, 1);
           else if (phase < 2.4)
-            blendPose(
-              girl,
-              GIRL_FRAMES,
-              2,
-              0,
-              (phase - 1.95) / 0.45,
-              lerp(shelfFoot, 0.84, smoothStep((phase - 1.95) / 0.45)),
-              shelfRow * 0.27 * (1 - smoothStep((phase - 1.95) / 0.45)),
-            );
+            drawStorageGirl(shelfRow, shelfColumn, 1 - (phase - 1.95) / 0.45);
           else drawPose(girl, GIRL_FRAMES, 0, 0.84);
 
           if (phase < 0.8) {
@@ -434,7 +635,9 @@ export default function ManufacturingHeroScene({
         function animate(timestamp: number) {
           if (disposed) return;
           frame = requestAnimationFrame(animate);
-          const dt = previous ? Math.min((timestamp - previous) / 1000, 0.05) : 0;
+          const dt = previous
+            ? Math.min((timestamp - previous) / 1000, 0.05)
+            : 0;
           previous = timestamp;
           if (!visible) return;
           if (playingRef.current && !media.matches) time.current += dt;
@@ -473,6 +676,7 @@ export default function ManufacturingHeroScene({
           height={ART_HEIGHT}
           role="img"
           aria-label={copy.hero.sceneLabel}
+          data-company-name={copy.company.name}
           data-visible-count="0"
           className={
             "absolute inset-0 h-full w-full " +
@@ -493,7 +697,9 @@ export default function ManufacturingHeroScene({
       </div>
       <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#cdb07b]/20 px-5 py-5 sm:px-8">
         <div>
-          <p className="text-xs tracking-wide text-[#cdb17c]">{copy.photos.render}</p>
+          <p className="text-xs tracking-wide text-[#cdb17c]">
+            {copy.photos.render}
+          </p>
           <p aria-live="polite" className="mt-2 text-sm text-[#f1e4cb]">
             {focused
               ? (copy.photos.names[focused.id] ?? focused.name)
