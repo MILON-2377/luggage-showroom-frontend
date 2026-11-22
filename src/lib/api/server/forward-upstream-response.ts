@@ -19,6 +19,10 @@ type ForwardUpstreamResponseOptions = {
   requestMethod: string;
 };
 
+type HeadersWithGetSetCookie = Headers & {
+  getSetCookie?: () => string[];
+};
+
 export function forwardUpstreamResponse({
   upstream,
   requestMethod,
@@ -35,6 +39,15 @@ export function forwardUpstreamResponse({
 
     if (value !== null) {
       headers.set(name, value);
+    }
+  }
+
+  const getSetCookie = (upstream.headers as HeadersWithGetSetCookie)
+    .getSetCookie;
+
+  if (typeof getSetCookie === "function") {
+    for (const cookie of getSetCookie.call(upstream.headers)) {
+      headers.append("set-cookie", cookie);
     }
   }
 

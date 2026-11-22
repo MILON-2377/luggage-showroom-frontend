@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { Alert, AlertDescription, AlertTitle } from "@/src/components/ui/alert";
 import {
@@ -20,7 +21,10 @@ type SetupStatus = "loading" | "error";
 const INVALID_LINK_MESSAGE = "This setup link is invalid or missing its token.";
 const SETUP_FAILED_MESSAGE =
   "We couldn't complete the setup request. The link may be invalid, expired, or already used. Please request a new setup link if necessary.";
-const TOTP_ROUTE = "/initial-mfa-setup/totp";
+
+const PASSKEY_ROUTE = "/initial-mfa-setup/passkey";
+const RESEND_ROUTE = "/initial-mfa-setup/resend";
+
 const INVALID = Symbol("invalid-setup-link");
 
 function extractTokenFromHash(): string | null {
@@ -73,7 +77,7 @@ export function InitialMfaSetupPage() {
         if (!active) return;
 
         setEnrollmentSession(session);
-        router.replace(TOTP_ROUTE);
+        router.replace(PASSKEY_ROUTE);
       },
       () => {
         if (!active) return;
@@ -114,10 +118,21 @@ export function InitialMfaSetupPage() {
               </p>
             </div>
           ) : (
-            <Alert variant="destructive" role="alert">
-              <AlertTitle>Setup could not continue</AlertTitle>
-              <AlertDescription>{errorMessage}</AlertDescription>
-            </Alert>
+            <div className="space-y-4">
+              <Alert variant="destructive" role="alert">
+                <AlertTitle>Setup could not continue</AlertTitle>
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
+
+              <div className="text-center">
+                <Link
+                  href={RESEND_ROUTE}
+                  className="text-sm font-medium text-primary underline underline-offset-4 hover:opacity-80"
+                >
+                  Request a new setup email
+                </Link>
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>

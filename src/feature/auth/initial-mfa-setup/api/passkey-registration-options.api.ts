@@ -1,0 +1,25 @@
+
+import { apiFetch } from "@/src/lib/api/client";
+
+import type {
+  PasskeyRegistrationOptionsRequest,
+  PasskeyRegistrationOptionsResponse,
+} from "../types/passkey-registration.types";
+
+const PASSKEY_REGISTRATION_OPTIONS_ENDPOINT =
+  "/api/server/admin-setup/initial-mfa-setup/passkey/registration/options";
+
+export function requestPasskeyRegistrationOptions(
+  payload: PasskeyRegistrationOptionsRequest,
+): Promise<PasskeyRegistrationOptionsResponse> {
+  return apiFetch<PasskeyRegistrationOptionsResponse>(
+    PASSKEY_REGISTRATION_OPTIONS_ENDPOINT,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    },
+  );
+}

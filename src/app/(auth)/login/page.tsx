@@ -1,7 +1,5 @@
-import React from 'react'
+import { AdminLoginPage } from "@/src/feature/auth/login/components/AdminLoginPage";
 
-export default function LoginPage() {
-  return (
-    <div>LoginPage</div>
-  )
+export default function LoginRoute() {
+  return <AdminLoginPage />;
 }

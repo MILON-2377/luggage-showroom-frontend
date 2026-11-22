@@ -26,7 +26,7 @@ type Enrollment = {
 };
 
 const LOGIN_ROUTE = "/login";
-const VERIFY_ROUTE = "/initial-mfa-setup/verify";
+const VERIFY_ROUTE = "/initial-mfa-setup/totp/verify";
 const COPY_FEEDBACK_MS = 2_000;
 const INVALID = Symbol("invalid-enrollment-session");
 
