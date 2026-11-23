@@ -1,17 +1,25 @@
+
 import "server-only";
 
 import { API_CONFIG } from "@/src/config/api";
 
 import { getApiBaseUrl } from "./api-env";
-import { isAuthTokenResponse } from "./auth-token-response";
 import { clearAuthCookies } from "./clear-auth-cookies";
 import { getRefreshToken } from "./get-refresh-token";
-import { setAuthCookies } from "./set-auth-cookies";
 
 const REFRESH_TIMEOUT_MS = 10_000;
-const MAX_RESPONSE_BYTES = 16 * 1024;
+const MAX_TOKEN_LENGTH = 4096;
+const TOKEN_PATTERN = /^[A-Za-z0-9\-._~+/]+=*$/;
 
-const inflightRefreshes = new Map<string, Promise<string | null>>();
+export type RefreshAuthResult = {
+  accessToken: string;
+  setCookies: string[];
+};
+
+const inflightRefreshes = new Map<
+  string,
+  Promise<RefreshAuthResult | null>
+>();
 
 function trimSlashes(value: string): string {
   return value.replace(/^\/+|\/+$/g, "");
@@ -20,6 +28,7 @@ function trimSlashes(value: string): string {
 function buildRefreshUrl(): URL {
   const endpoint = [
     trimSlashes(API_CONFIG.API_PREFIX),
+    trimSlashes(API_CONFIG.BACKEND.ADMIN),
     trimSlashes(API_CONFIG.AUTH.REFRESH_ENDPOINT),
   ]
     .filter(Boolean)
@@ -31,75 +40,74 @@ function buildRefreshUrl(): URL {
   return url;
 }
 
-async function readJsonBody(response: Response): Promise<unknown> {
-  const contentType = response.headers.get("content-type") ?? "";
+function getRotatedCookies(
+  response: Response,
+): RefreshAuthResult | null {
+  const getSetCookie = response.headers.getSetCookie;
 
-  if (!contentType.toLowerCase().includes("application/json")) {
-    await response.body?.cancel().catch(() => undefined);
+  if (typeof getSetCookie !== "function") {
     return null;
   }
 
-  const declaredLength = response.headers.get("content-length");
+  const allowedNames = new Set<string>([
+    API_CONFIG.AUTH.ACCESS_COOKIE,
+    API_CONFIG.AUTH.REFRESH_COOKIE,
+  ]);
 
-  if (declaredLength !== null) {
-    const length = Number(declaredLength);
+  const setCookies = getSetCookie
+    .call(response.headers)
+    .filter((cookie) => {
+      const separatorIndex = cookie.indexOf("=");
 
-    if (
-      !Number.isSafeInteger(length) ||
-      length < 0 ||
-      length > MAX_RESPONSE_BYTES
-    ) {
-      await response.body?.cancel().catch(() => undefined);
-      return null;
-    }
-  }
-
-  if (!response.body) {
-    return null;
-  }
-
-  const reader = response.body.getReader();
-  const chunks: Uint8Array[] = [];
-  let totalBytes = 0;
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-
-      if (done) {
-        break;
+      if (separatorIndex <= 0) {
+        return false;
       }
 
-      totalBytes += value.byteLength;
+      const name = cookie.slice(0, separatorIndex).trim();
+      const value = cookie
+        .slice(separatorIndex + 1)
+        .split(";")[0]
+        .trim();
 
-      if (totalBytes > MAX_RESPONSE_BYTES) {
-        await reader.cancel().catch(() => undefined);
-        return null;
-      }
+      return (
+        allowedNames.has(name) &&
+        value.length > 0 &&
+        value.length <= MAX_TOKEN_LENGTH &&
+        TOKEN_PATTERN.test(value) &&
+        /;\s*httponly(?:;|$)/i.test(cookie) &&
+        /;\s*secure(?:;|$)/i.test(cookie) &&
+        /;\s*path=\/(?:;|$)/i.test(cookie) &&
+        /;\s*samesite=lax(?:;|$)/i.test(cookie) &&
+        !/;\s*domain=/i.test(cookie)
+      );
+    });
 
-      chunks.push(value);
-    }
+  const accessCookie = setCookies.find((cookie) =>
+    cookie.startsWith(`${API_CONFIG.AUTH.ACCESS_COOKIE}=`),
+  );
 
-    const body = new Uint8Array(totalBytes);
-    let offset = 0;
+  const refreshCookie = setCookies.find((cookie) =>
+    cookie.startsWith(`${API_CONFIG.AUTH.REFRESH_COOKIE}=`),
+  );
 
-    for (const chunk of chunks) {
-      body.set(chunk, offset);
-      offset += chunk.byteLength;
-    }
-
-    return JSON.parse(new TextDecoder().decode(body));
-  } catch {
-    await reader.cancel().catch(() => undefined);
+  if (!accessCookie || !refreshCookie) {
     return null;
-  } finally {
-    reader.releaseLock();
   }
+
+  const accessToken = accessCookie
+    .slice(accessCookie.indexOf("=") + 1)
+    .split(";")[0]
+    .trim();
+
+  return {
+    accessToken,
+    setCookies: [accessCookie, refreshCookie],
+  };
 }
 
 async function performRefresh(
   refreshToken: string,
-): Promise<string | null> {
+): Promise<RefreshAuthResult | null> {
   let response: Response;
 
   try {
@@ -107,11 +115,8 @@ async function performRefresh(
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        Cookie: `${API_CONFIG.AUTH.REFRESH_COOKIE}=${refreshToken}`,
       },
-      body: JSON.stringify({
-        refresh_token: refreshToken,
-      }),
       cache: "no-store",
       redirect: "manual",
       signal: AbortSignal.timeout(REFRESH_TIMEOUT_MS),
@@ -126,32 +131,23 @@ async function performRefresh(
     return null;
   }
 
-  if (!response.ok) {
+  if (response.status !== 204) {
     await response.body?.cancel().catch(() => undefined);
     return null;
   }
 
-  const data = await readJsonBody(response);
+  await response.body?.cancel().catch(() => undefined);
 
-  if (!isAuthTokenResponse(data)) {
-    return null;
+  const result = getRotatedCookies(response);
+
+  if (!result) {
+    await clearAuthCookies();
   }
 
-  try {
-    await setAuthCookies({
-      accessToken: data.access_token,
-      refreshToken: data.refresh_token,
-      accessTokenMaxAge: data.expires_in,
-      refreshTokenMaxAge: data.refresh_expires_in,
-    });
-  } catch {
-    return null;
-  }
-
-  return data.access_token;
+  return result;
 }
 
-export async function refreshAuthSession(): Promise<string | null> {
+export async function refreshAuthSession(): Promise<RefreshAuthResult | null> {
   const refreshToken = await getRefreshToken();
 
   if (!refreshToken) {

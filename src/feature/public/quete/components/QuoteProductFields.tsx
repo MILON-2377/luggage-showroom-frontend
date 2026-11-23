@@ -1,4 +1,4 @@
-import { Label } from "@/src/components/ui/lebel";
+import { Label } from "@/src/components/ui/label";
 import { QuoteField } from "./QuoteUi";
 import { ChevronDown } from "lucide-react";
 import type { FieldProps } from "../types/quote.types";

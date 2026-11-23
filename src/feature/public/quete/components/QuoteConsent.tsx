@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Checkbox } from "@/src/components/ui/checkbox";
-import { Label } from "@/src/components/ui/lebel";
+import { Label } from "@/src/components/ui/label";
 import { quoteConfig } from "../data/quote.config";
 import type { FieldProps } from "../types/quote.types";
 export default function QuoteConsent({ copy, values, update }: FieldProps) {

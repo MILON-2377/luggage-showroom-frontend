@@ -1,36 +1,49 @@
 "use client";
 
+import { Button } from "@/src/components/ui/button";
 import { useLanguage } from "@/src/providers";
 
+type LanguageSwitcherProps = {
+  ariaLabel?: string;
+};
 
-export default function LanguageSwitcher() {
+export function LanguageSwitcher({
+  ariaLabel = "Language",
+}: LanguageSwitcherProps) {
   const { locale, setLocale } = useLanguage();
 
   return (
-    <div className="flex items-center gap-2">
-      <button
+    <div
+      role="group"
+      aria-label={ariaLabel}
+      className="grid grid-cols-2 border border-[var(--border)] bg-[var(--surface)]"
+    >
+      <Button
+        type="button"
+        variant="ghost"
         onClick={() => setLocale("en")}
-        className={`text-sm font-medium transition-colors ${
+        aria-pressed={locale === "en"}
+        className={
           locale === "en"
-            ? "text-black"
-            : "text-gray-400 hover:text-black"
-        }`}
+            ? "h-8 rounded-none bg-[var(--primary)] font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--primary-foreground)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)]"
+            : "h-8 rounded-none bg-transparent font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--muted-foreground)] hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)]"
+        }
       >
         EN
-      </button>
-
-      <span className="text-gray-300">|</span>
-
-      <button
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
         onClick={() => setLocale("zh")}
-        className={`text-sm font-medium transition-colors ${
+        aria-pressed={locale === "zh"}
+        className={
           locale === "zh"
-            ? "text-black"
-            : "text-gray-400 hover:text-black"
-        }`}
+            ? "h-8 rounded-none border-l border-[var(--border)] bg-[var(--primary)] font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--primary-foreground)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)]"
+            : "h-8 rounded-none border-l border-[var(--border)] bg-transparent font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--muted-foreground)] hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)]"
+        }
       >
         中文
-      </button>
+      </Button>
     </div>
   );
 }

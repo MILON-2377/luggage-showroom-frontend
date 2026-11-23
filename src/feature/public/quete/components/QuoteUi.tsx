@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/lebel";
+import { Label } from "@/src/components/ui/label";
 import type { FieldProps, TextField } from "../types/quote.types";
 export const panel =
   "rounded-[28px] border border-white/80 bg-gradient-to-br from-white to-[#f3eddf] shadow-[6px_8px_0_#cfbd96,0_22px_45px_-24px_#45351c66]";

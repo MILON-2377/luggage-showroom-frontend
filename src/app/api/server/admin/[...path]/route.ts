@@ -1,4 +1,3 @@
-import "server-only";
 
 import { createAuthenticatedProxyHandler } from "@/src/lib/api/server/create-authenticated-proxy-handler";
 

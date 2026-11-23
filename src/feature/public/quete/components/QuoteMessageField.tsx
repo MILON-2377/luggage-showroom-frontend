@@ -1,4 +1,4 @@
-import { Label } from "@/src/components/ui/lebel";
+import { Label } from "@/src/components/ui/label";
 import { Textarea } from "@/src/components/ui/textarea";
 import type { FieldProps } from "../types/quote.types";
 export default function QuoteMessageField({

@@ -1,12 +1,16 @@
+import type { ReactNode } from "react";
+
+import { AuthProvider } from "@/src/providers/AuthProvider";
+import { DashboardShell } from "@/src/feature/layout";
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gray-100">
-      {children}
-    </div>
+    <AuthProvider>
+      <DashboardShell>{children}</DashboardShell>
+    </AuthProvider>
   );
 }
