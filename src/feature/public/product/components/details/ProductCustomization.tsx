@@ -1,7 +1,7 @@
 "use client";
 import { Check, PenTool } from "lucide-react";
 import { useLanguage } from "@/src/providers";
-import type { Product } from "../types/product.types";
+import type { Product } from "../../types/product.types";
 export default function ProductCustomization({
   product,
 }: {

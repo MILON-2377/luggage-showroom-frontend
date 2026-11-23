@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useLanguage } from "@/src/providers";
 import ProductCard from "../ProductCard";
 import { getProductSlug } from "../../data/product-details";
-import type { Product, ProductCopy } from "../types/product.types";
+import type { Product, ProductCopy } from "../../types/product.types";
 export default function RelatedProducts({ products }: { products: Product[] }) {
   const { t } = useLanguage();
   const router = useRouter();

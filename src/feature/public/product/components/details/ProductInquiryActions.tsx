@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ArrowUpRight, MessagesSquare } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/lebel";
+import { Label } from "@/src/components/ui/label";
 import { useLanguage } from "@/src/providers";
 export default function ProductInquiryActions({
   productId,

@@ -1,7 +1,7 @@
 "use client";
 import { Layers3 } from "lucide-react";
 import { useLanguage } from "@/src/providers";
-import type { Product } from "../types/product.types";
+import type { Product } from "../../types/product.types";
 export default function ProductMaterials({ product }: { product: Product }) {
   const { t } = useLanguage();
   const c = t.productDetails;

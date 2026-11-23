@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Bot, LoaderCircle, Send, X } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/lebel";
+import { Label } from "@/src/components/ui/label";
 import { useLanguage } from "@/src/providers";
 import AiChatMessage from "./AiChatMessage";
 import AiSuggestedQuestions from "./AiSuggestedQuestions";

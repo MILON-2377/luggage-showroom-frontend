@@ -1,6 +1,5 @@
-import type { Product } from "../components/types/product.types";
-import type { ProductDetailData } from "../components/details/type/product-details.types";
-// Add confirmed specifications here. Empty fields are shown as awaiting confirmation.
+import type { Product } from "../types/product.types";
+import type { ProductDetailData } from "../types/product-details.types"; 
 export const productDetails: Record<string, ProductDetailData> = {
   c01: { slug: "essential-eva-case" },
   c02: { slug: "digital-companion" },

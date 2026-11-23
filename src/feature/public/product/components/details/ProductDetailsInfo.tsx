@@ -1,7 +1,7 @@
 "use client";
 import { Layers3, Ruler, PackageCheck } from "lucide-react";
 import { useLanguage } from "@/src/providers";
-import type { Product, ProductCopy } from "../types/product.types";
+import type { Product, ProductCopy } from "../../types/product.types";
 import ProductInquiryActions from "./ProductInquiryActions";
 export default function ProductDetailsInfo({
   product,

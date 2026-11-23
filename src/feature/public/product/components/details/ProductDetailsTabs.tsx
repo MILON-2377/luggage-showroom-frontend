@@ -13,8 +13,8 @@ import {
   TabsContent,
 } from "@/src/components/ui/tabs";
 import { useLanguage } from "@/src/providers";
-import type { Product } from "../types/product.types";
-import type { ProductDetailData } from "./type/product-details.types";
+import type { Product } from "../../types/product.types";
+import type { ProductDetailData } from "../../types/product-details.types"; 
 import ProductSpecifications from "./ProductSpecifications";
 import ProductMaterials from "./ProductMaterials";
 import ProductCustomization from "./ProductCustomization";

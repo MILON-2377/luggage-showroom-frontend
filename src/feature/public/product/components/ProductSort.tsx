@@ -1,6 +1,6 @@
 "use client";
 import { useId } from "react";
-import { Label } from "@/src/components/ui/lebel";
+import { Label } from "@/src/components/ui/label";
 import { useLanguage } from "@/src/providers";
 import type { ProductSortValue } from "../types/product-query.types";
 export default function ProductSort({

@@ -2,7 +2,7 @@
 import { useId } from "react";
 import { Search, X } from "lucide-react";
 import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/lebel";
+import { Label } from "@/src/components/ui/label";
 import { Button } from "@/src/components/ui/button";
 import { useLanguage } from "@/src/providers";
 export default function ProductSearch({

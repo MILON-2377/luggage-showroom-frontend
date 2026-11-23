@@ -1,6 +1,6 @@
 "use client";
 import { useLanguage } from "@/src/providers";
-import type { ProductDetailData } from "./type/product-details.types";
+import type { ProductDetailData } from "../../types/product-details.types";
 export default function ProductDimensions({
   details,
 }: {

@@ -8,8 +8,8 @@ import {
   TableCell,
 } from "@/src/components/ui/table";
 import { useLanguage } from "@/src/providers";
-import type { Product } from "../types/product.types";
-import type { ProductDetailData } from "./type/product-details.types";
+import type { Product } from "../../types/product.types";
+import type { ProductDetailData } from "../../types/product-details.types";
 export default function ProductSpecifications({
   product,
   details,
