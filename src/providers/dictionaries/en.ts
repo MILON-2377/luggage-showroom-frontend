@@ -1,6 +1,5 @@
 
 
-
 const en = {
 
   dashboardPage: {
@@ -11,17 +10,17 @@ const en = {
         system: "System",
       },
       nav: {
-      overview: "Overview",
-      inventory: "Inventory",
-      catalog: "Catalog",
-      catalogOverview: "Overview",
-      catalogProducts: "Products",
-      catalogCategories: "Categories",
-      catalogAttributes: "Attributes",
-      orders: "Orders",
-      customers: "Customers",
-      security: "Security & MFA",
-    },
+        overview: "Overview",
+        inventory: "Inventory",
+        catalog: "Catalog",
+        catalogOverview: "Overview",
+        catalogProducts: "Products",
+        catalogCategories: "Categories",
+        catalogAttributes: "Attributes",
+        orders: "Orders",
+        customers: "Customers",
+        security: "Security & MFA",
+      },
       sessionActive: "Session Active",
       roleLabel: "ADMIN",
       storefront: "Storefront",
@@ -1895,6 +1894,29 @@ const en = {
 
     cta: "Explore OEM & ODM Services",
     note: "From your concept to your finished collection.",
+
+    motion: {
+      "atelier": "THE CUSTOM DESIGN ATELIER",
+      "chooseBag": "Choose a bag",
+      "original": "Original color",
+      "burgundy": "Burgundy",
+      "colorNote": "Color simulation for discussion. Final colors and materials are confirmed through physical samples.",
+      "replay": "Replay the bag arrival",
+      "pause": "Pause the presentation",
+      "resume": "Resume the presentation",
+      "soundOn": "Enable thunder sound",
+      "soundOff": "Mute thunder sound",
+      "loading": "Preparing your bag preview…",
+      "failed": "This bag photo could not be loaded. Please choose another bag.",
+      "models": {
+        "camo": "Camouflage EVA case",
+        "wristlet": "Cream wristlet case",
+        "pink": "Pink round case"
+      },
+      "material": "Material direction",
+      "lining": "Lining reference",
+      "finish": "Finish details"
+    },
   },
 
   engineering: {
@@ -2488,5 +2510,8 @@ const en = {
 };
 
 export default en;
+
+
+
 
 
