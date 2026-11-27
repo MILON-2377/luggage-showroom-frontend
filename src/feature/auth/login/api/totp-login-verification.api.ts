@@ -1,18 +1,17 @@
-import { apiFetch } from "@/src/lib/api/client";
+import { adminFetch } from "@/src/lib/api/client";
 
 import type {
   MfaVerificationResponse,
   TotpLoginVerificationRequest,
 } from "../types/admin-login.types";
 
-const TOTP_LOGIN_VERIFICATION_ENDPOINT =
-  "/api/server/admin-setup/login/totp/verify";
+const TOTP_LOGIN_VERIFICATION_ENDPOINT = "auth/login/totp/verify";
 
 export function verifyTotpLogin(
   payload: TotpLoginVerificationRequest,
   signal?: AbortSignal,
 ): Promise<MfaVerificationResponse> {
-  return apiFetch<MfaVerificationResponse>(
+  return adminFetch<MfaVerificationResponse>(
     TOTP_LOGIN_VERIFICATION_ENDPOINT,
     {
       method: "POST",

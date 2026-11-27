@@ -1,18 +1,17 @@
-import { apiFetch } from "@/src/lib/api/client";
+import { adminFetch } from "@/src/lib/api/client";
 
 import type {
   MfaVerificationResponse,
   PasskeyLoginVerificationRequest,
 } from "../types/admin-login.types";
 
-const PASSKEY_LOGIN_VERIFICATION_ENDPOINT =
-  "/api/server/admin-setup/login/passkey/verify";
+const PASSKEY_LOGIN_VERIFICATION_ENDPOINT = "auth/login/passkey/verify";
 
 export function verifyPasskeyLogin(
   payload: PasskeyLoginVerificationRequest,
   signal?: AbortSignal,
 ): Promise<MfaVerificationResponse> {
-  return apiFetch<MfaVerificationResponse>(
+  return adminFetch<MfaVerificationResponse>(
     PASSKEY_LOGIN_VERIFICATION_ENDPOINT,
     {
       method: "POST",

@@ -1,17 +1,17 @@
-import { apiFetch } from "@/src/lib/api/client"; 
+import { adminFetch } from "@/src/lib/api/client";
 
 import type {
   AdminLoginRequest,
   AdminLoginResponse,
 } from "../types/admin-login.types";
 
-const ADMIN_LOGIN_ENDPOINT = "/api/server/admin-setup/login";
+const ADMIN_LOGIN_ENDPOINT = "auth/login";
 
 export function adminLogin(
   payload: AdminLoginRequest,
   signal?: AbortSignal,
 ): Promise<AdminLoginResponse> {
-  return apiFetch<AdminLoginResponse>(ADMIN_LOGIN_ENDPOINT, {
+  return adminFetch<AdminLoginResponse>(ADMIN_LOGIN_ENDPOINT, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

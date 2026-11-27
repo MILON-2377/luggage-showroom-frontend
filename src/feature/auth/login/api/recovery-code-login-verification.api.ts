@@ -1,4 +1,4 @@
-import { apiFetch } from "@/src/lib/api/client";
+import { adminFetch } from "@/src/lib/api/client";
 
 import type {
   MfaVerificationResponse,
@@ -6,13 +6,13 @@ import type {
 } from "../types/admin-login.types";
 
 const RECOVERY_CODE_LOGIN_VERIFICATION_ENDPOINT =
-  "/api/server/admin-setup/login/recovery-code/verify";
+  "auth/login/recovery-code/verify";
 
 export function verifyRecoveryCodeLogin(
   payload: RecoveryCodeLoginVerificationRequest,
   signal?: AbortSignal,
 ): Promise<MfaVerificationResponse> {
-  return apiFetch<MfaVerificationResponse>(
+  return adminFetch<MfaVerificationResponse>(
     RECOVERY_CODE_LOGIN_VERIFICATION_ENDPOINT,
     {
       method: "POST",

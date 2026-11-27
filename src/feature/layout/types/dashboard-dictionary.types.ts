@@ -1,19 +1,30 @@
+import type { DashboardNavKey } from "./dashboard-navigation.types";
+
 export type DashboardLocale = "en" | "zh";
 
-export type DashboardNavKey =
-  | "overview"
-  | "inventory"
-  | "catalog"
-  | "orders"
-  | "customers"
-  | "security";
-
-export type DashboardNavGroupKey = "operations" | "system";
+export type DashboardPageMeta = {
+  badge: string;
+  title: string;
+};
 
 export type DashboardLayoutDictionary = {
   brandSubtitle: string;
-  groups: Record<DashboardNavGroupKey, string>;
-  nav: Record<DashboardNavKey, string>;
+  groups: {
+    operations: string;
+    system: string;
+  };
+  nav: {
+    overview: string;
+    inventory: string;
+    catalog: string;
+    catalogOverview: string;
+    catalogProducts: string;
+    catalogCategories: string;
+    catalogAttributes: string;
+    orders: string;
+    customers: string;
+    security: string;
+  };
   sessionActive: string;
   roleLabel: string;
   storefront: string;
@@ -21,18 +32,6 @@ export type DashboardLayoutDictionary = {
   signOut: string;
 };
 
-export type DashboardPageMetaDictionary = {
-  badge: string;
-  title: string;
-  description: string;
-};
-
-export type DashboardDictionary = {
+export type DashboardDictionary = Record<DashboardNavKey, DashboardPageMeta> & {
   layout: DashboardLayoutDictionary;
-  overview: DashboardPageMetaDictionary;
-  inventory: DashboardPageMetaDictionary;
-  catalog: DashboardPageMetaDictionary;
-  orders: DashboardPageMetaDictionary;
-  customers: DashboardPageMetaDictionary;
-  security: DashboardPageMetaDictionary;
 };

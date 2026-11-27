@@ -1,9 +1,13 @@
 import {
+  Activity,
+  Box,
   Briefcase,
   FolderKanban,
+  FolderTree,
   LayoutDashboard,
   Package,
   ShieldCheck,
+  SlidersHorizontal,
   Users,
 } from "lucide-react";
 
@@ -34,6 +38,29 @@ export const DASHBOARD_NAV_ITEMS: readonly DashboardNavItem[] = [
     href: "/dashboard/catalog",
     icon: FolderKanban,
     group: "operations",
+    children: [
+      {
+        key: "catalogOverview",
+        href: "/dashboard/catalog",
+        icon: Activity,
+        exact: true,
+      },
+      {
+        key: "catalogProducts",
+        href: "/dashboard/catalog/products",
+        icon: Box,
+      },
+      {
+        key: "catalogCategories",
+        href: "/dashboard/catalog/categories",
+        icon: FolderTree,
+      },
+      {
+        key: "catalogAttributes",
+        href: "/dashboard/catalog/attributes",
+        icon: SlidersHorizontal,
+      },
+    ],
   },
   {
     key: "orders",
@@ -72,6 +99,10 @@ export const DASHBOARD_SIDEBAR_FALLBACK_DICTIONARY: Record<
       overview: "Overview",
       inventory: "Inventory",
       catalog: "Catalog",
+      catalogOverview: "Overview",
+      catalogProducts: "Products",
+      catalogCategories: "Categories",
+      catalogAttributes: "Attributes",
       orders: "Orders",
       customers: "Customers",
       security: "Security & MFA",
@@ -92,6 +123,10 @@ export const DASHBOARD_SIDEBAR_FALLBACK_DICTIONARY: Record<
       overview: "总览",
       inventory: "库存管理",
       catalog: "商品目录",
+      catalogOverview: "目录概览",
+      catalogProducts: "商品管理",
+      catalogCategories: "类目配置",
+      catalogAttributes: "属性库",
       orders: "订单管理",
       customers: "客户管理",
       security: "安全与验证",

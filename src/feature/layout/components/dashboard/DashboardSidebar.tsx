@@ -1,8 +1,9 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ExternalLink, Globe } from "lucide-react";
+import { ChevronRight, ExternalLink, Globe } from "lucide-react";
 
 import { Separator } from "@/src/components/ui/seperator";
 import { LogoutButton } from "@/src/feature/auth/logout/components/LogoutButton";
@@ -16,135 +17,330 @@ import {
 import type {
   DashboardLayoutDictionary,
   DashboardLocale,
-  DashboardNavGroupKey,
 } from "../../types/dashboard-dictionary.types";
+import type { DashboardNavGroupKey } from "../../types/dashboard-navigation.types";
 
 type DashboardSidebarProps = {
   dictionary?: DashboardLayoutDictionary;
+  onNavigate?: () => void;
 };
 
 const NAV_GROUPS: readonly DashboardNavGroupKey[] = ["operations", "system"];
 
-export function DashboardSidebar({ dictionary }: DashboardSidebarProps) {
-  const pathname = usePathname();
-  const { locale } = useLanguage();
+type DashboardSidebarNavProps = {
+  dict: DashboardLayoutDictionary;
+  pathname: string;
+  onNavigate?: () => void;
+};
 
-  const activeLocale: DashboardLocale = locale === "zh" ? "zh" : "en";
-  const dict =
-    dictionary ?? DASHBOARD_SIDEBAR_FALLBACK_DICTIONARY[activeLocale];
+function DashboardSidebarNavContent({
+  dict,
+  pathname,
+  onNavigate,
+}: DashboardSidebarNavProps) {
+  const [manuallyExpanded, setManuallyExpanded] = useState<
+    Record<string, boolean>
+  >({});
 
-  function isRouteActive(href: string): boolean {
-    if (href === "/dashboard") {
-      return pathname === "/dashboard";
+  function isRouteActive(href: string, exact = false): boolean {
+    if (!pathname) return false;
+    if (exact || href === "/dashboard") {
+      return pathname === href;
     }
 
     return pathname === href || pathname.startsWith(`${href}/`);
   }
 
+  function isGroupExpanded(itemHref: string): boolean {
+    if (typeof manuallyExpanded[itemHref] === "boolean") {
+      return manuallyExpanded[itemHref];
+    }
+
+    return isRouteActive(itemHref);
+  }
+
+  function toggleGroup(itemHref: string) {
+    setManuallyExpanded((prev) => ({
+      ...prev,
+      [itemHref]: !isGroupExpanded(itemHref),
+    }));
+  }
+
   return (
-    <aside className="flex h-full w-64 shrink-0 flex-col justify-between border-r border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)]">
-      <div>
-        <div className="h-[3px] w-full bg-[var(--accent)]" />
+    <div className="space-y-6 px-3 py-4">
+      {NAV_GROUPS.map((groupKey, groupIndex) => {
+        const items = DASHBOARD_NAV_ITEMS.filter(
+          (item) => item.group === groupKey,
+        );
 
-        <div className="space-y-6 p-5">
-          <div className="border-b border-[var(--border)] pb-5">
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-3 transition-opacity hover:opacity-80"
-            >
-              <span className="inline-flex size-9 shrink-0 items-center justify-center border border-[var(--accent)] bg-[var(--surface-muted)] font-mono text-xs font-semibold tracking-[0.18em] text-[var(--accent)]">
-                BG
-              </span>
+        return (
+          <div key={groupKey}>
+            {groupIndex > 0 && (
+              <Separator className="mb-5 bg-[var(--border)]/70" />
+            )}
 
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold tracking-[0.22em] text-[var(--foreground)] uppercase">
-                  BAGGUAGE
-                </span>
-                <span className="font-mono text-[10px] tracking-[0.16em] text-[var(--muted-foreground)] uppercase">
-                  {dict.brandSubtitle}
-                </span>
+            <nav aria-label={dict.groups[groupKey]}>
+              <div className="mb-2 px-2.5 text-[11px] font-medium tracking-wider text-[var(--muted-foreground)] uppercase">
+                {dict.groups[groupKey]}
               </div>
-            </Link>
-          </div>
 
-          {NAV_GROUPS.map((groupKey, index) => {
-            const items = DASHBOARD_NAV_ITEMS.filter(
-              (item) => item.group === groupKey,
-            );
+              <ul className="space-y-0.5">
+                {items.map((item) => {
+                  const Icon = item.icon;
+                  const hasChildren = Boolean(item.children?.length);
+                  const active = isRouteActive(item.href);
+                  const expanded = hasChildren && isGroupExpanded(item.href);
+                  const hasActiveChild = item.children?.some((sub) =>
+                    isRouteActive(sub.href, sub.exact),
+                  );
 
-            return (
-              <div key={groupKey} className="space-y-6">
-                {index > 0 && <Separator className="bg-[var(--border)]" />}
-
-                <nav aria-label={dict.groups[groupKey]} className="space-y-2">
-                  <div className="px-2 pb-1 font-mono text-[10px] font-semibold tracking-[0.24em] text-[var(--muted-foreground)] uppercase">
-                    {dict.groups[groupKey]}
-                  </div>
-
-                  <ul className="space-y-1">
-                    {items.map((item) => {
-                      const Icon = item.icon;
-                      const active = isRouteActive(item.href);
-
-                      return (
-                        <li key={item.href}>
-                          <Link
-                            href={item.href}
-                            aria-current={active ? "page" : undefined}
-                            className={
-                              active
-                                ? "group flex w-full items-center justify-between border border-[var(--primary)] bg-[var(--primary)] px-3 py-2.5 text-[var(--primary-foreground)] transition-colors"
-                                : "group flex w-full items-center justify-between border border-transparent bg-transparent px-3 py-2.5 text-[var(--foreground)] transition-colors hover:border-[var(--border)] hover:bg-[var(--surface-muted)]"
-                            }
+                  return (
+                    <li key={item.href}>
+                      {hasChildren ? (
+                        <div className="space-y-0.5">
+                          <div
+                            className={`group flex items-center justify-between rounded-lg transition-colors ${
+                              active && !hasActiveChild
+                                ? "bg-[var(--accent)]/12 text-[var(--foreground)] font-medium"
+                                : active
+                                  ? "text-[var(--foreground)] font-medium"
+                                  : "text-[var(--muted-foreground)] hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)]"
+                            }`}
                           >
-                            <span className="flex items-center gap-3">
+                            <Link
+                              href={item.href}
+                              onClick={onNavigate}
+                              aria-current={
+                                pathname === item.href ? "page" : undefined
+                              }
+                              className="relative flex min-w-0 flex-1 items-center gap-2.5 py-2 pr-1.5 pl-3 text-[13px]"
+                            >
+                              {active && !hasActiveChild && (
+                                <span
+                                  aria-hidden="true"
+                                  className="absolute top-1.5 bottom-1.5 left-0 w-1 rounded-r bg-[var(--accent)]"
+                                />
+                              )}
+
                               <Icon
-                                className={
+                                className={`size-4 shrink-0 transition-colors ${
                                   active
-                                    ? "size-4 text-[var(--accent)]"
-                                    : "size-4 text-[var(--secondary)] transition-colors group-hover:text-[var(--accent)]"
-                                }
+                                    ? "text-[var(--accent)]"
+                                    : "text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]"
+                                }`}
                                 aria-hidden="true"
                               />
 
-                              <span className="text-xs font-semibold tracking-[0.14em] uppercase">
+                              <span className="truncate">
                                 {dict.nav[item.key]}
                               </span>
-                            </span>
+                            </Link>
 
-                            <span
-                              className={
-                                active
-                                  ? "font-mono text-[10px] tracking-[0.16em] text-[var(--accent)]"
-                                  : "font-mono text-[10px] tracking-[0.16em] text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]"
-                              }
+                            <button
+                              type="button"
+                              onClick={() => toggleGroup(item.href)}
+                              aria-expanded={expanded}
+                              aria-label={`Toggle ${dict.nav[item.key]} menu`}
+                              className="mr-1.5 inline-flex size-7 shrink-0 items-center justify-center rounded-md text-[var(--muted-foreground)] transition-colors hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)]"
                             >
-                              {item.code}
-                            </span>
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </nav>
+                              <ChevronRight
+                                className={`size-3.5 transition-transform duration-200 ${
+                                  expanded ? "rotate-90" : "rotate-0"
+                                }`}
+                                aria-hidden="true"
+                              />
+                            </button>
+                          </div>
+
+                          {expanded && item.children && (
+                            <ul className="mt-1 ml-5 space-y-0.5 border-l border-[var(--border)] pl-2.5">
+                              {item.children.map((subItem) => {
+                                const SubIcon = subItem.icon;
+                                const subActive = isRouteActive(
+                                  subItem.href,
+                                  subItem.exact,
+                                );
+
+                                return (
+                                  <li key={subItem.href}>
+                                    <Link
+                                      href={subItem.href}
+                                      onClick={onNavigate}
+                                      aria-current={
+                                        subActive ? "page" : undefined
+                                      }
+                                      className={`group flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[12.5px] transition-colors ${
+                                        subActive
+                                          ? "bg-[var(--accent)]/12 font-medium text-[var(--accent)]"
+                                          : "text-[var(--muted-foreground)] hover:bg-[var(--surface-muted)]/70 hover:text-[var(--foreground)]"
+                                      }`}
+                                    >
+                                      {SubIcon ? (
+                                        <SubIcon
+                                          className={`size-3.5 shrink-0 ${
+                                            subActive
+                                              ? "text-[var(--accent)]"
+                                              : "text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]"
+                                          }`}
+                                          aria-hidden="true"
+                                        />
+                                      ) : (
+                                        <span
+                                          className={`size-1.5 shrink-0 rounded-full ${
+                                            subActive
+                                              ? "bg-[var(--accent)]"
+                                              : "bg-[var(--muted-foreground)]/40"
+                                          }`}
+                                        />
+                                      )}
+
+                                      <span className="truncate">
+                                        {dict.nav[subItem.key]}
+                                      </span>
+                                    </Link>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          )}
+                        </div>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          onClick={onNavigate}
+                          aria-current={active ? "page" : undefined}
+                          className={`group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition-colors ${
+                            active
+                              ? "bg-[var(--accent)]/12 font-medium text-[var(--foreground)]"
+                              : "text-[var(--muted-foreground)] hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)]"
+                          }`}
+                        >
+                          {active && (
+                            <span
+                              aria-hidden="true"
+                              className="absolute top-1.5 bottom-1.5 left-0 w-1 rounded-r bg-[var(--accent)]"
+                            />
+                          )}
+
+                          <Icon
+                            className={`size-4 shrink-0 transition-colors ${
+                              active
+                                ? "text-[var(--accent)]"
+                                : "text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]"
+                            }`}
+                            aria-hidden="true"
+                          />
+
+                          <span className="truncate">
+                            {dict.nav[item.key]}
+                          </span>
+                        </Link>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function DashboardSidebarActiveNav({
+  dict,
+  onNavigate,
+}: {
+  dict: DashboardLayoutDictionary;
+  onNavigate?: () => void;
+}) {
+  const pathname = usePathname();
+  return (
+    <DashboardSidebarNavContent
+      dict={dict}
+      pathname={pathname}
+      onNavigate={onNavigate}
+    />
+  );
+}
+
+export function DashboardSidebar({
+  dictionary,
+  onNavigate,
+}: DashboardSidebarProps) {
+  const { locale } = useLanguage();
+
+  const activeLocale: DashboardLocale = locale === "zh" ? "zh" : "en";
+  const fallbackDict = DASHBOARD_SIDEBAR_FALLBACK_DICTIONARY[activeLocale];
+
+  const dict: DashboardLayoutDictionary = dictionary
+    ? {
+        ...fallbackDict,
+        ...dictionary,
+        groups: {
+          ...fallbackDict.groups,
+          ...dictionary.groups,
+        },
+        nav: {
+          ...fallbackDict.nav,
+          ...dictionary.nav,
+        },
+      }
+    : fallbackDict;
+
+  return (
+    <aside className="flex h-full w-64 shrink-0 flex-col justify-between overflow-y-auto border-r border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)]">
+      <div className="flex flex-col">
+        {/* Top Brand Header */}
+        <div className="flex h-16 items-center justify-between border-b border-[var(--border)] px-4">
+          <Link
+            href="/dashboard"
+            onClick={onNavigate}
+            className="flex min-w-0 items-center gap-2.5 rounded-lg px-1.5 py-1 transition-colors hover:bg-[var(--surface-muted)]"
+          >
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[var(--accent)]/15 font-mono text-xs font-bold text-[var(--accent)] ring-1 ring-[var(--accent)]/30">
+              BG
+            </div>
+
+            <div className="min-w-0">
+              <div className="truncate text-sm font-semibold tracking-wider text-[var(--foreground)]">
+                BAGGUAGE
               </div>
-            );
-          })}
+              <div className="truncate text-[11px] text-[var(--muted-foreground)]">
+                {dict.brandSubtitle}
+              </div>
+            </div>
+          </Link>
         </div>
+
+        {/* Navigation Groups */}
+        <Suspense
+          fallback={
+            <DashboardSidebarNavContent
+              dict={dict}
+              pathname=""
+              onNavigate={onNavigate}
+            />
+          }
+        >
+          <DashboardSidebarActiveNav dict={dict} onNavigate={onNavigate} />
+        </Suspense>
       </div>
 
-      <div className="space-y-3 border-t border-[var(--border)] bg-[var(--surface-muted)]/60 p-4">
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between font-mono text-[10px] font-semibold tracking-[0.2em] text-[var(--muted-foreground)] uppercase">
-            <span className="flex items-center gap-1.5">
+      {/* Bottom Utility Footer */}
+      <div className="space-y-3 border-t border-[var(--border)] p-3">
+        <div className="rounded-lg bg-[var(--surface-muted)]/60 p-2.5">
+          <div className="mb-1.5 flex items-center justify-between text-[11px] text-[var(--muted-foreground)]">
+            <span className="inline-flex items-center gap-1.5 font-medium">
               <Globe
-                className="size-3 text-[var(--accent)]"
+                className="size-3.5 text-[var(--accent)]"
                 aria-hidden="true"
               />
               {dict.languageLabel}
             </span>
 
-            <span className="text-[var(--accent)]">
+            <span className="font-mono text-[10px] font-semibold text-[var(--accent)]">
               {activeLocale.toUpperCase()}
             </span>
           </div>
@@ -152,27 +348,35 @@ export function DashboardSidebar({ dictionary }: DashboardSidebarProps) {
           <LanguageSwitcher ariaLabel={dict.languageLabel} />
         </div>
 
-        <Separator className="bg-[var(--border)]" />
+        <div className="flex items-center justify-between px-1.5 text-[11px] text-[var(--muted-foreground)]">
+          <span className="inline-flex items-center gap-1.5">
+            <span
+              aria-hidden="true"
+              className="size-1.5 rounded-full bg-emerald-500"
+            />
+            {dict.sessionActive}
+          </span>
 
-        <div className="flex items-center justify-between text-[10px] font-semibold tracking-[0.2em] text-[var(--accent)] uppercase">
-          <span>{dict.sessionActive}</span>
-          <span className="font-mono text-[var(--muted-foreground)]">
+          <span className="rounded bg-[var(--surface-muted)] px-1.5 py-0.5 font-mono text-[10px] font-medium text-[var(--foreground)]">
             {dict.roleLabel}
           </span>
         </div>
 
-        <LogoutButton />
+        <div className="space-y-1.5 pt-0.5">
+          <LogoutButton />
 
-        <Link
-          href="/"
-          className="flex h-10 w-full items-center justify-between border border-[var(--border)] bg-[var(--surface)] px-3 text-[11px] font-semibold tracking-[0.16em] text-[var(--foreground)] uppercase transition-colors hover:border-[var(--accent)] hover:bg-[var(--surface-muted)]"
-        >
-          <span>{dict.storefront}</span>
-          <ExternalLink
-            className="size-3.5 text-[var(--muted-foreground)]"
-            aria-hidden="true"
-          />
-        </Link>
+          <Link
+            href="/"
+            onClick={onNavigate}
+            className="flex h-9 w-full items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 text-xs font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--surface-muted)]"
+          >
+            <span>{dict.storefront}</span>
+            <ExternalLink
+              className="size-3.5 text-[var(--muted-foreground)]"
+              aria-hidden="true"
+            />
+          </Link>
+        </div>
       </div>
     </aside>
   );
