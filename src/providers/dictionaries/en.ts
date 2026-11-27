@@ -1,5 +1,4 @@
 
-
 const en = {
 
   dashboardPage: {
@@ -7,7 +6,7 @@ const en = {
       brandSubtitle: "Operations Console",
       groups: {
         operations: "Operations",
-        system: "System",
+        system: "System"
       },
       nav: {
         overview: "Overview",

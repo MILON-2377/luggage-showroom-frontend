@@ -1,64 +1,6 @@
 
 
 const zh = {
-
-  dashboardPage: {
-    layout: {
-      brandSubtitle: "运营控制台",
-      groups: {
-        operations: "业务运营",
-        system: "系统管理",
-      },
-      nav: {
-        overview: "总览",
-        inventory: "库存管理",
-        catalog: "商品目录",
-        catalogOverview: "目录概览",
-        catalogProducts: "商品管理",
-        catalogCategories: "类目配置",
-        catalogAttributes: "属性库",
-        orders: "订单管理",
-        customers: "客户管理",
-        security: "安全与验证",
-      },
-      sessionActive: "会话已激活",
-      roleLabel: "管理员",
-      storefront: "访问前台",
-      languageLabel: "语言设置",
-      signOut: "退出登录",
-    },
-    overview: {
-      badge: "指挥中心 // 01",
-      title: "运营总览",
-      description: "实时业务指标、履约状态与系统告警摘要。",
-    },
-    inventory: {
-      badge: "库存 // 02",
-      title: "库存控制",
-      description: "仓储分配、SKU 库存阈值与出入库记录。",
-    },
-    catalog: {
-      badge: "目录 // 03",
-      title: "商品目录",
-      description: "管理系列分类、规格参数、定价与商品变体。",
-    },
-    orders: {
-      badge: "调度 // 04",
-      title: "订单管理",
-      description: "追踪当前订单、物流配送与履约流程。",
-    },
-    customers: {
-      badge: "名录 // 05",
-      title: "客户账户",
-      description: "客户档案、历史订单记录与账户权限管理。",
-    },
-    security: {
-      badge: "安全 // SEC",
-      title: "安全与多因素认证",
-      description: "管理通行密钥、身份验证器令牌与备用恢复码。",
-    },
-  },
-
   quotePage: {
     atelier: {
       changePhoto: "切换展示箱包",
@@ -1225,71 +1167,71 @@ const zh = {
   },
 
   homeJourney: {
-    "eyebrow": "一个包，贯穿每一段旅程",
-    "ready": "滚动页面，跟随粉色收纳包。",
-    "watch": "观看完整旅程",
-    "replay": "重播本章节",
-    "next": "下一章节",
-    "pause": "暂停动画",
-    "resume": "继续动画",
-    "travelling": "前往下一章节…",
-    "reduced": "已减少动态效果，您可以按自己的节奏浏览。",
-    "bagAlt": "粉色圆形防护收纳包",
-    "illustration": "视觉概念演示。容纳物品、内部适配及抗摔性能需针对具体产品测试，本动画不代表测试结果。",
-    "phases": {
-      "drop": "轻轻落下，展现缓冲构想。",
-      "open": "打开收纳包，发现更多可能。",
-      "pack": "物品依次进入，每一件都被看见。",
-      "protect": "合上包体，演示防护设计构想。",
-      "reveal": "再次打开，查看包内物品。"
-    },
-    "stages": {
-      "hero": {
-        "title": "为珍贵物品，构想更柔和的着陆。",
-        "description": "从首次落下到最后打开，跟随粉色收纳包的旅程。一只小小的玻璃杯，开启关于防护设计的故事。"
-      },
-      "featured": {
-        "title": "每一件日常用品，都有自己的位置。",
-        "description": "口红、粉饼、化妆刷依次进入。观看每件物品单独到来，让收纳成为日常仪式的一部分。"
-      },
-      "trust": {
-        "title": "安心感，始于周到的考虑。",
-        "description": "包内带着一件精致物品继续前行，从外壳到内衬，探索细致防护的设计构想。"
-      },
-      "customization": {
-        "title": "您的系列，您的专属组合。",
-        "description": "熟悉的轮廓，搭配不同的日常用品。探索围绕您的产品与品牌开发收纳包的可能。"
-      },
-      "engineering": {
-        "title": "围绕包内的重要物品展开设计。",
-        "description": "观看合包、落下与再次打开的过程。外壳结构、内衬及内部适配，都是您可以与我们讨论的项目细节。"
-      },
-      "manufacturing": {
-        "title": "让系列构想，逐步成为收纳产品。",
-        "description": "旅程继续来到生产制造环节。每件用品依次进入，让您的产品构想更加清晰。"
-      },
-      "quality": {
-        "title": "落下，回弹，再仔细看看。",
-        "description": "观看示意性的冲击过程与再次开包。欢迎向团队咨询适用于您产品及使用场景的测试方案。"
-      },
-      "reviews": {
-        "title": "为日常陪伴而构想。",
-        "description": "几件随身用品，依次妥善收纳。同一个粉色包，贯穿页面的每一个章节。"
-      },
-      "contact": {
-        "title": "告诉我们，您想收纳什么。",
-        "description": "分享您的物品、尺寸与使用场景，我们的团队可以与您讨论包体结构及内部布局。"
-      },
-      "partner": {
-        "title": "用周到的设计，开启长久的合作。",
-        "description": "收纳包再次打开，展示里面的物品。让这个视觉故事，成为讨论您专属防护包装的起点。"
-      },
-      "final": {
-        "title": "下一个章节，属于您的品牌。",
-        "description": "从最初的创意到完整的产品系列，欢迎与我们的团队讨论您的专属收纳包。"
-      }
-    }
+  "eyebrow": "一个包，贯穿每一段旅程",
+  "ready": "滚动页面，跟随粉色收纳包。",
+  "watch": "观看完整旅程",
+  "replay": "重播本章节",
+  "next": "下一章节",
+  "pause": "暂停动画",
+  "resume": "继续动画",
+  "travelling": "前往下一章节…",
+  "reduced": "已减少动态效果，您可以按自己的节奏浏览。",
+  "bagAlt": "粉色圆形防护收纳包",
+  "illustration": "视觉概念演示。容纳物品、内部适配及抗摔性能需针对具体产品测试，本动画不代表测试结果。",
+  "phases": {
+    "drop": "轻轻落下，展现缓冲构想。",
+    "open": "打开收纳包，发现更多可能。",
+    "pack": "物品依次进入，每一件都被看见。",
+    "protect": "合上包体，演示防护设计构想。",
+    "reveal": "再次打开，查看包内物品。"
   },
+  "stages": {
+    "hero": {
+      "title": "为珍贵物品，构想更柔和的着陆。",
+      "description": "从首次落下到最后打开，跟随粉色收纳包的旅程。一只小小的玻璃杯，开启关于防护设计的故事。"
+    },
+    "featured": {
+      "title": "每一件日常用品，都有自己的位置。",
+      "description": "口红、粉饼、化妆刷依次进入。观看每件物品单独到来，让收纳成为日常仪式的一部分。"
+    },
+    "trust": {
+      "title": "安心感，始于周到的考虑。",
+      "description": "包内带着一件精致物品继续前行，从外壳到内衬，探索细致防护的设计构想。"
+    },
+    "customization": {
+      "title": "您的系列，您的专属组合。",
+      "description": "熟悉的轮廓，搭配不同的日常用品。探索围绕您的产品与品牌开发收纳包的可能。"
+    },
+    "engineering": {
+      "title": "围绕包内的重要物品展开设计。",
+      "description": "观看合包、落下与再次打开的过程。外壳结构、内衬及内部适配，都是您可以与我们讨论的项目细节。"
+    },
+    "manufacturing": {
+      "title": "让系列构想，逐步成为收纳产品。",
+      "description": "旅程继续来到生产制造环节。每件用品依次进入，让您的产品构想更加清晰。"
+    },
+    "quality": {
+      "title": "落下，回弹，再仔细看看。",
+      "description": "观看示意性的冲击过程与再次开包。欢迎向团队咨询适用于您产品及使用场景的测试方案。"
+    },
+    "reviews": {
+      "title": "为日常陪伴而构想。",
+      "description": "几件随身用品，依次妥善收纳。同一个粉色包，贯穿页面的每一个章节。"
+    },
+    "contact": {
+      "title": "告诉我们，您想收纳什么。",
+      "description": "分享您的物品、尺寸与使用场景，我们的团队可以与您讨论包体结构及内部布局。"
+    },
+    "partner": {
+      "title": "用周到的设计，开启长久的合作。",
+      "description": "收纳包再次打开，展示里面的物品。让这个视觉故事，成为讨论您专属防护包装的起点。"
+    },
+    "final": {
+      "title": "下一个章节，属于您的品牌。",
+      "description": "从最初的创意到完整的产品系列，欢迎与我们的团队讨论您的专属收纳包。"
+    }
+  }
+},
 
   search: {
     "eyebrow": "系列探索",
@@ -1327,106 +1269,106 @@ const zh = {
     "retry": "重试"
   },
 
-  productDetails: {
-    colorPreferenceNote: "请选择您希望定制的颜色。色块仅代表配色意向，并非已确认的库存颜色。只有添加对应颜色照片后，预览图才会切换；最终色号与供应情况需由团队确认。",
+ productDetails: {
+colorPreferenceNote: "请选择您希望定制的颜色。色块仅代表配色意向，并非已确认的库存颜色。只有添加对应颜色照片后，预览图才会切换；最终色号与供应情况需由团队确认。",
 
-    "breadcrumb": "产品导航",
-    "home": "首页",
-    "products": "产品",
-    "fullDetails": "完整详情",
-    "gallery": "产品图库",
-    "views": "产品图片视角",
-    "view": "视图",
-    "concept": "产品概念",
-    "expand": "放大图片",
-    "close": "关闭",
-    "previous": "上一张图片",
-    "next": "下一张图片",
-    "galleryNote": "浏览现有产品图片，欢迎与团队讨论产品规格与定制要求。",
-    "eyebrow": "产品创意工作室 · 批发业务咨询",
-    "confirmation": "本页面为产品信息草稿。产品供应、规格、颜色、材料及生产安排均需结合您的项目确认。",
-    "colors": "颜色选择",
-    "colorsPending": "欢迎与团队讨论您的配色需求，此产品尚未添加已确认的颜色选项。",
-    "colorNames": {
-      "black": "黑色",
-      "beige": "米色",
-      "brown": "棕色",
-      "ivory": "象牙色",
-      "white": "白色",
-      "red": "红色",
-      "navy": "藏蓝色",
-      "pink": "粉色",
-      "green": "绿色"
-    },
-    "collectionTitle": "为您的产品系列而设计",
-    "collectionDescription": "欢迎提供结构、尺寸、品牌标识与包装需求，我们的团队将与您讨论此设计的开发方向。",
-    "quantity": "预计订购数量",
-    "optional": "选填",
-    "quote": "申请批发报价",
-    "quoteNote": "告诉我们您的项目需求",
-    "discuss": "讨论定制方案",
-    "sizing": "尺寸与结构",
-    "sizingNote": "确认产品所需的尺寸与内部布局。",
-    "packaging": "品牌与包装",
-    "packagingNote": "讨论品牌设计文件与包装呈现要求。",
-    "detailsEyebrow": "产品详情与规格",
-    "detailsTitle": "用心设计，关注每个细节。",
-    "detailsDescription": "在讨论订单前，了解产品方向、材料及尺寸信息。",
-    "specsTab": "技术规格",
-    "materialsTab": "材料与结构",
-    "customTab": "OEM 与定制",
-    "dimensionsTab": "尺寸指南",
-    "mediaTab": "图片与细节视图",
-    "specNote": "此产品为目录概念草稿，尚未确认的具体参数将显示为待确认。",
-    "specification": "规格项目",
-    "value": "详细信息",
-    "productFamily": "产品类别",
-    "materialLabel": "示例材料选项",
-    "closure": "开合方式",
-    "linings": "内衬",
-    "lining": "内衬",
-    "dimensions": "尺寸（长 × 宽 × 高）",
-    "weight": "重量",
-    "minimumOrder": "最低起订量",
-    "leadTime": "生产周期",
-    "days": "天",
-    "pending": "待确认",
-    "pendingShort": "待确认",
-    "closureNames": {
-      "zipper": "拉链",
-      "magnetic": "磁吸开合",
-      "drawstring": "抽绳"
-    },
-    "liningNames": {
-      "polyester": "涤纶",
-      "fabric": "织物"
-    },
-    "materialNote": "以下为此草稿产品列出的示例材料方向。具体等级、厚度、表面效果及适用性需与团队确认。",
-    "materialDescriptions": {
-      "eva": "用于讨论成型结构与防护收纳结构的材料方向。请结合收纳物品确认密度、厚度、表面工艺与适用性。",
-      "pu": "用于探索纹理、颜色与外观呈现的表面材料方向，具体成分与性能要求请与团队确认。",
-      "pvc": "用于讨论表面或面板结构的材料方向。订购前需确认具体规格及适用的产品要求。",
-      "polyester": "用于讨论外层面料、内衬或收纳部件的织物方向。请确认织法、克重、颜色与制作细节。"
-    },
-    "customNote": "了解此概念产品列出的示例定制方向。可行性、设计文件、开发与生产细节需根据项目确认。",
-    "steps": [
-      "提供产品想法、图纸或样品。",
-      "讨论结构、材料与品牌标识要求。",
-      "确认样品与后续生产安排。"
-    ],
-    "dimensionDiagram": "包袋尺寸示意图",
-    "diagramNote": "仅作尺寸说明，并非此产品的技术图纸。",
-    "length": "长度",
-    "width": "宽度",
-    "height": "高度",
-    "dimensionTitle": "合适的尺寸，始于充分确认。",
-    "dimensionNote": "请提供需要收纳的物品及所需的内部或外部尺寸。最终尺寸与公差需结合确认后的产品设计确定。",
-    "mediaNote": "浏览现有图片。如需更多视角或生产参考资料，欢迎联系我们的团队。",
-    "mediaPending": "尚未添加此产品的细节照片。",
-    "relatedEyebrow": "探索更多设计方向",
-    "relatedTitle": "为您的系列寻找更多灵感。",
-    "translationPending": "产品信息翻译待完善。"
-  },
+   "breadcrumb": "产品导航",
+   "home": "首页",
+   "products": "产品",
+   "fullDetails": "完整详情",
+   "gallery": "产品图库",
+   "views": "产品图片视角",
+   "view": "视图",
+   "concept": "产品概念",
+   "expand": "放大图片",
+   "close": "关闭",
+   "previous": "上一张图片",
+   "next": "下一张图片",
+   "galleryNote": "浏览现有产品图片，欢迎与团队讨论产品规格与定制要求。",
+   "eyebrow": "产品创意工作室 · 批发业务咨询",
+   "confirmation": "本页面为产品信息草稿。产品供应、规格、颜色、材料及生产安排均需结合您的项目确认。",
+   "colors": "颜色选择",
+   "colorsPending": "欢迎与团队讨论您的配色需求，此产品尚未添加已确认的颜色选项。",
+   "colorNames": {
+     "black": "黑色",
+     "beige": "米色",
+     "brown": "棕色",
+     "ivory": "象牙色",
+     "white": "白色",
+     "red": "红色",
+     "navy": "藏蓝色",
+     "pink": "粉色",
+     "green": "绿色"
+   },
+   "collectionTitle": "为您的产品系列而设计",
+   "collectionDescription": "欢迎提供结构、尺寸、品牌标识与包装需求，我们的团队将与您讨论此设计的开发方向。",
+   "quantity": "预计订购数量",
+   "optional": "选填",
+   "quote": "申请批发报价",
+   "quoteNote": "告诉我们您的项目需求",
+   "discuss": "讨论定制方案",
+   "sizing": "尺寸与结构",
+   "sizingNote": "确认产品所需的尺寸与内部布局。",
+   "packaging": "品牌与包装",
+   "packagingNote": "讨论品牌设计文件与包装呈现要求。",
+   "detailsEyebrow": "产品详情与规格",
+   "detailsTitle": "用心设计，关注每个细节。",
+   "detailsDescription": "在讨论订单前，了解产品方向、材料及尺寸信息。",
+   "specsTab": "技术规格",
+   "materialsTab": "材料与结构",
+   "customTab": "OEM 与定制",
+   "dimensionsTab": "尺寸指南",
+   "mediaTab": "图片与细节视图",
+   "specNote": "此产品为目录概念草稿，尚未确认的具体参数将显示为待确认。",
+   "specification": "规格项目",
+   "value": "详细信息",
+   "productFamily": "产品类别",
+   "materialLabel": "示例材料选项",
+   "closure": "开合方式",
+   "linings": "内衬",
+   "lining": "内衬",
+   "dimensions": "尺寸（长 × 宽 × 高）",
+   "weight": "重量",
+   "minimumOrder": "最低起订量",
+   "leadTime": "生产周期",
+   "days": "天",
+   "pending": "待确认",
+   "pendingShort": "待确认",
+   "closureNames": {
+     "zipper": "拉链",
+     "magnetic": "磁吸开合",
+     "drawstring": "抽绳"
+   },
+   "liningNames": {
+     "polyester": "涤纶",
+     "fabric": "织物"
+   },
+   "materialNote": "以下为此草稿产品列出的示例材料方向。具体等级、厚度、表面效果及适用性需与团队确认。",
+   "materialDescriptions": {
+     "eva": "用于讨论成型结构与防护收纳结构的材料方向。请结合收纳物品确认密度、厚度、表面工艺与适用性。",
+     "pu": "用于探索纹理、颜色与外观呈现的表面材料方向，具体成分与性能要求请与团队确认。",
+     "pvc": "用于讨论表面或面板结构的材料方向。订购前需确认具体规格及适用的产品要求。",
+     "polyester": "用于讨论外层面料、内衬或收纳部件的织物方向。请确认织法、克重、颜色与制作细节。"
+   },
+   "customNote": "了解此概念产品列出的示例定制方向。可行性、设计文件、开发与生产细节需根据项目确认。",
+   "steps": [
+     "提供产品想法、图纸或样品。",
+     "讨论结构、材料与品牌标识要求。",
+     "确认样品与后续生产安排。"
+   ],
+   "dimensionDiagram": "包袋尺寸示意图",
+   "diagramNote": "仅作尺寸说明，并非此产品的技术图纸。",
+   "length": "长度",
+   "width": "宽度",
+   "height": "高度",
+   "dimensionTitle": "合适的尺寸，始于充分确认。",
+   "dimensionNote": "请提供需要收纳的物品及所需的内部或外部尺寸。最终尺寸与公差需结合确认后的产品设计确定。",
+   "mediaNote": "浏览现有图片。如需更多视角或生产参考资料，欢迎联系我们的团队。",
+   "mediaPending": "尚未添加此产品的细节照片。",
+   "relatedEyebrow": "探索更多设计方向",
+   "relatedTitle": "为您的系列寻找更多灵感。",
+   "translationPending": "产品信息翻译待完善。"
+ },
 
   productPage: {
     "eyebrow": "产品创意工作室",
@@ -1471,48 +1413,48 @@ const zh = {
     "ctaDescription": "欢迎分享您的创意、图纸或样品，一起讨论项目的材料、结构、品牌标识与包装。",
     "ctaButton": "讨论定制项目",
     "categories": [
-      {
+{
         "id": "eva",
         "label": "EVA 收纳包"
       },
-      {
+{
         "id": "pencil",
         "label": "笔袋"
       },
-      {
+{
         "id": "medical",
         "label": "急救包"
       },
-      {
+{
         "id": "toiletry",
         "label": "洗漱包"
       },
-      {
+{
         "id": "electronics",
         "label": "电子产品收纳包"
       },
-      {
+{
         "id": "automotive",
         "label": "汽车用品收纳包"
       },
-      { "id": "makeup", "label": "化妆包" },
-      { "id": "travel", "label": "旅行收纳包" },
-      { "id": "tools", "label": "工具收纳包" },
-      { "id": "handbags", "label": "手提包" },
-      { "id": "party", "label": "宴会晚宴包" },
-      { "id": "backpacks", "label": "背包" },
-      { "id": "documents", "label": "文件收纳包" },
-      { "id": "tote", "label": "托特包" },
-      { "id": "shoulder", "label": "单肩包" },
-      { "id": "crossbody", "label": "斜挎包" },
-      { "id": "clutch", "label": "手拿包" },
-      { "id": "bucket", "label": "水桶包" },
-      { "id": "mini", "label": "迷你包" },
-      { "id": "satchel", "label": "手提挎包" },
-      { "id": "belt", "label": "腰包" },
-      { "id": "shopping", "label": "购物袋" },
-      { "id": "duffel", "label": "周末旅行包" }
-    ],
+{"id":"makeup","label":"化妆包"},
+{"id":"travel","label":"旅行收纳包"},
+{"id":"tools","label":"工具收纳包"},
+{"id":"handbags","label":"手提包"},
+{"id":"party","label":"宴会晚宴包"},
+{"id":"backpacks","label":"背包"},
+{"id":"documents","label":"文件收纳包"},
+{"id":"tote","label":"托特包"},
+{"id":"shoulder","label":"单肩包"},
+{"id":"crossbody","label":"斜挎包"},
+{"id":"clutch","label":"手拿包"},
+{"id":"bucket","label":"水桶包"},
+{"id":"mini","label":"迷你包"},
+{"id":"satchel","label":"手提挎包"},
+{"id":"belt","label":"腰包"},
+{"id":"shopping","label":"购物袋"},
+{"id":"duffel","label":"周末旅行包"}
+],
     "materials": [
       {
         "id": "eva",
@@ -1546,56 +1488,56 @@ const zh = {
       }
     ],
     "catalog": {
-      "c01": {
+"c01": {
         "name": "简约基础系列",
         "description": "以简洁轮廓为基础的结构化防护收纳概念，为品牌标识预留设计空间。"
       },
-      "c02": {
+"c02": {
         "name": "数码随行系列",
         "description": "电子产品收纳概念，可围绕您的设备与配件讨论内部布局。"
       },
-      "c03": {
+"c03": {
         "name": "创意文具系列",
         "description": "结合紧凑外形与个性配色方向的笔袋概念。"
       },
-      "c04": {
+"c04": {
         "name": "安心守护系列",
         "description": "急救用品收纳概念，可讨论分类布局与清晰的产品识别设计。"
       },
-      "c05": {
+"c05": {
         "name": "旅行日常系列",
         "description": "用于探索完整旅行产品系列的洗漱收纳概念。"
       },
-      "c06": {
+"c06": {
         "name": "出行伙伴系列",
         "description": "围绕实用整理需求展开的汽车用品收纳概念。"
       },
-      "c07": {
+"c07": {
         "name": "科技收纳系列",
         "description": "另一种电子收纳设计方向，展示品牌与包装的组合可能。"
       },
-      "c08": {
+"c08": {
         "name": "品牌形态系列",
         "description": "以温暖材质方向为灵感的 EVA 收纳概念，适合讨论协调统一的品牌系列。"
       },
-      "collection-makeup": { "name": "美妆收纳系列", "description": "此系列为化妆包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。" },
-      "collection-travel": { "name": "旅途整理系列", "description": "此系列为旅行收纳包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。" },
-      "collection-tools": { "name": "工具整理系列", "description": "此系列为工具收纳包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。" },
-      "collection-handbags": { "name": "手提包概念系列", "description": "此系列为手提包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。" },
-      "collection-party": { "name": "晚宴包概念系列", "description": "此系列为宴会晚宴包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。" },
-      "collection-backpacks": { "name": "背包概念系列", "description": "此系列为背包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。" },
-      "collection-documents": { "name": "文件整理系列", "description": "此系列为文件收纳包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。" },
-      "collection-tote": { "name": "日常托特系列", "description": "面向女生与女性的托特包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。" },
-      "collection-shoulder": { "name": "优雅单肩系列", "description": "面向女生与女性的单肩包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。" },
-      "collection-crossbody": { "name": "轻盈斜挎系列", "description": "面向女生与女性的斜挎包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。" },
-      "collection-clutch": { "name": "精致手拿系列", "description": "面向女生与女性的手拿包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。" },
-      "collection-bucket": { "name": "随性水桶系列", "description": "面向女生与女性的水桶包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。" },
-      "collection-mini": { "name": "迷你随行系列", "description": "面向女生与女性的迷你包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。" },
-      "collection-satchel": { "name": "经典手提挎包系列", "description": "面向女生与女性的手提挎包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。" },
-      "collection-belt": { "name": "轻便腰包系列", "description": "面向女生与女性的腰包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。" },
-      "collection-shopping": { "name": "日常购物系列", "description": "面向女生与女性的购物袋系列规划概念。产品供应情况、设计、材料与照片需与团队确认。" },
-      "collection-duffel": { "name": "周末出行系列", "description": "面向女生与女性的周末旅行包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。" }
-    }
+"collection-makeup": {"name":"美妆收纳系列","description":"此系列为化妆包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。"},
+"collection-travel": {"name":"旅途整理系列","description":"此系列为旅行收纳包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。"},
+"collection-tools": {"name":"工具整理系列","description":"此系列为工具收纳包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。"},
+"collection-handbags": {"name":"手提包概念系列","description":"此系列为手提包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。"},
+"collection-party": {"name":"晚宴包概念系列","description":"此系列为宴会晚宴包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。"},
+"collection-backpacks": {"name":"背包概念系列","description":"此系列为背包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。"},
+"collection-documents": {"name":"文件整理系列","description":"此系列为文件收纳包的目录规划概念，产品供应情况、材料、功能及照片均需与团队确认。"},
+"collection-tote": {"name":"日常托特系列","description":"面向女生与女性的托特包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。"},
+"collection-shoulder": {"name":"优雅单肩系列","description":"面向女生与女性的单肩包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。"},
+"collection-crossbody": {"name":"轻盈斜挎系列","description":"面向女生与女性的斜挎包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。"},
+"collection-clutch": {"name":"精致手拿系列","description":"面向女生与女性的手拿包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。"},
+"collection-bucket": {"name":"随性水桶系列","description":"面向女生与女性的水桶包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。"},
+"collection-mini": {"name":"迷你随行系列","description":"面向女生与女性的迷你包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。"},
+"collection-satchel": {"name":"经典手提挎包系列","description":"面向女生与女性的手提挎包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。"},
+"collection-belt": {"name":"轻便腰包系列","description":"面向女生与女性的腰包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。"},
+"collection-shopping": {"name":"日常购物系列","description":"面向女生与女性的购物袋系列规划概念。产品供应情况、设计、材料与照片需与团队确认。"},
+"collection-duffel": {"name":"周末出行系列","description":"面向女生与女性的周末旅行包系列规划概念。产品供应情况、设计、材料与照片需与团队确认。"}
+}
   },
 
   faq: {
@@ -1879,7 +1821,7 @@ const zh = {
     },
     cta: "探索 OEM 与 ODM 服务",
     note: "从创意构想到完整产品系列。",
-
+  
     motion: {
       "atelier": "专属定制设计工坊",
       "chooseBag": "选择箱包",
