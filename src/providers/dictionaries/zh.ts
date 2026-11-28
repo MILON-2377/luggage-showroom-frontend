@@ -1,6 +1,42 @@
 
 
+
 const zh = {
+  dashboardAtelier: {
+    "eyebrow": "运营总览",
+    "title": "每一次携带背后的生意。",
+    "description": "在精心设计的工作空间中，管理您的产品系列、生产业务与合作关系。",
+    "manageProducts": "管理商品",
+    "catalog": "产品目录",
+    "catalogDescription": "管理产品详情、材料信息与系列参考。",
+    "orders": "订单工作台",
+    "ordersDescription": "查看订单，协调下一阶段的生产安排。",
+    "customers": "客户关系",
+    "customersDescription": "管理客户档案，维护业务合作关系。",
+    "open": "进入工作台",
+    "collection": "产品陈列工坊",
+    "collectionDescription": "您的产品，您的工艺，由您掌控。",
+    "reference": "展示参考",
+    "referenceNote": "此处图片用于展示产品系列。请进入商品目录管理实际产品记录。",
+    "manage": "管理",
+    "case": "简约收纳包",
+    "wristlet": "奶油色手提包",
+    "organizer": "旅行收纳包",
+    "round": "圆形收纳包",
+    "shortcuts": "工作空间入口",
+    "securityDescription": "查看账户安全与身份验证设置。",
+    "inventoryDescription": "进入库存工具，查看库存记录。",
+    "company": "义乌市初橙箱包有限公司",
+    "activity": "工作空间动态",
+    "time": "时间",
+    "area": "模块",
+    "action": "操作",
+    "status": "状态",
+    "emptyActivity": "尚未连接动态数据源。",
+    "search": "查找工作空间…",
+    "noResults": "未找到匹配的工作空间。"
+},
+
     dashboardPage: {
     layout: {
       brandSubtitle: "运营管理控制台",

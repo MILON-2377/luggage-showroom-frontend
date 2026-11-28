@@ -1,5 +1,44 @@
 
+
+
+
+
 const en = {
+  dashboardAtelier: {
+    "eyebrow": "Operations overview",
+    "title": "The business behind every carry.",
+    "description": "Manage your collection, production and partnerships from one considered workspace.",
+    "manageProducts": "Manage products",
+    "catalog": "Product catalog",
+    "catalogDescription": "Manage product details, materials and collection references.",
+    "orders": "Order workspace",
+    "ordersDescription": "Review orders and coordinate the next production steps.",
+    "customers": "Customer relations",
+    "customersDescription": "Manage customer records and business relationships.",
+    "open": "Open workspace",
+    "collection": "Collection atelier",
+    "collectionDescription": "Your products. Your craftsmanship. Your control.",
+    "reference": "Visual reference",
+    "referenceNote": "These images introduce your collection. Open the catalog to manage actual product records.",
+    "manage": "Manage",
+    "case": "Essential Case",
+    "wristlet": "Cream Wristlet",
+    "organizer": "Travel Organizer",
+    "round": "Round Case",
+    "shortcuts": "Workspace access",
+    "securityDescription": "Review your account security and verification settings.",
+    "inventoryDescription": "Open inventory tools to review your stock records.",
+    "company": "Yiwu Chucheng Bags Co., Ltd.",
+    "activity": "Workspace activity",
+    "time": "Time",
+    "area": "Area",
+    "action": "Action",
+    "status": "Status",
+    "emptyActivity": "No activity source connected yet.",
+    "search": "Find a workspace…",
+    "noResults": "No matching workspace."
+},
+
 
   dashboardPage: {
     layout: {

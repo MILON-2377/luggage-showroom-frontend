@@ -61,11 +61,11 @@ function DashboardHeaderBreadcrumb({
 
   return (
     <div className="flex min-w-0 items-center gap-3">
-      <span className="hidden shrink-0 border border-[var(--border)] bg-[var(--surface-muted)] px-2 py-0.5 font-mono text-[10px] font-semibold tracking-[0.2em] text-[var(--accent)] uppercase sm:inline-block">
+      <span className="hidden shrink-0 rounded-lg border border-[#dbc49a] bg-gradient-to-br from-[#f9edcf] to-[#e8d7b5] px-2.5 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-[#795b35] shadow-[0_2px_0_#d4bd94,inset_0_1px_0_#ffffff] uppercase sm:inline-block">
         {pageMeta.badge}
       </span>
 
-      <span className="truncate text-xs font-semibold tracking-[0.18em] text-[var(--foreground)] uppercase sm:text-sm">
+      <span className="truncate text-sm font-semibold tracking-tight text-[#f2e5ce] sm:text-base">
         {pageMeta.title}
       </span>
 
@@ -95,10 +95,10 @@ function DashboardHeaderBreadcrumbFallback({
 
   return (
     <div className="flex min-w-0 items-center gap-3">
-      <span className="hidden shrink-0 border border-[var(--border)] bg-[var(--surface-muted)] px-2 py-0.5 font-mono text-[10px] font-semibold tracking-[0.2em] text-[var(--accent)] uppercase sm:inline-block">
+      <span className="hidden shrink-0 rounded-lg border border-[#dbc49a] bg-gradient-to-br from-[#f9edcf] to-[#e8d7b5] px-2.5 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-[#795b35] shadow-[0_2px_0_#d4bd94,inset_0_1px_0_#ffffff] uppercase sm:inline-block">
         {defaultMeta.badge}
       </span>
-      <span className="truncate text-xs font-semibold tracking-[0.18em] text-[var(--foreground)] uppercase sm:text-sm">
+      <span className="truncate text-sm font-semibold tracking-tight text-[#f2e5ce] sm:text-base">
         {defaultMeta.title}
       </span>
     </div>
@@ -133,18 +133,18 @@ export function DashboardHeader({ dictionary }: DashboardHeaderProps) {
     : null;
 
   return (
-    <header className="sticky top-0 z-20 border-b border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur-sm">
-      <div className="flex h-16 items-center justify-between gap-4 px-5 lg:px-8">
+    <header className="sticky top-0 z-20 rounded-b-[14px] border border-[#b19772]/25 bg-gradient-to-r from-[#282521]/95 via-[#35302a]/95 to-[#211f1d]/95 shadow-[0_6px_28px_#00000030,inset_0_1px_0_#ffffff10] backdrop-blur-xl lg:top-4 lg:mx-6 lg:rounded-[20px]">
+      <div className="flex min-h-20 items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-7">
         <div className="flex min-w-0 items-center gap-3.5">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger className="inline-flex size-9 shrink-0 items-center justify-center border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--foreground)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--surface)] lg:hidden">
+            <SheetTrigger className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl border border-[#dbc49a] bg-gradient-to-br from-[#fff5de] to-[#e4c99c] text-[#573b32] shadow-[0_3px_0_#c3a77b] transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a58b65] motion-reduce:transform-none lg:hidden">
               <Menu className="size-4" aria-hidden="true" />
               <span className="sr-only">Open navigation menu</span>
             </SheetTrigger>
 
             <SheetContent
               side="left"
-              className="w-64 rounded-none border-r border-[var(--border)] bg-[var(--surface)] p-0"
+              className="w-[min(340px,92vw)] max-w-[92vw] gap-0 rounded-r-[28px] border-r border-[#d8bc82]/40 bg-[#281a2160] p-2 backdrop-blur-2xl [&>button]:z-10 [&>button]:text-[#e8d3b0]"
             >
               <SheetTitle className="sr-only">
                 BAGGUAGE Navigation
@@ -169,8 +169,8 @@ export function DashboardHeader({ dictionary }: DashboardHeaderProps) {
         </div>
 
         {/* Google-style profile pill */}
-        <div className="flex max-w-[220px] min-w-0 shrink-0 items-center gap-2.5 rounded-full border border-[var(--border)] bg-[var(--surface-muted)] py-1 pr-3.5 pl-1 transition-colors hover:border-[var(--accent)]">
-          <div className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--border)] bg-[var(--surface)]">
+        <div className="flex max-w-[130px] min-w-0 shrink-0 items-center gap-2.5 rounded-2xl border border-[#d8c29e]/60 bg-gradient-to-br from-[#403831] to-[#27221f] p-1.5 pr-3 shadow-[0_3px_10px_#00000040,inset_0_1px_0_#ffffff15] sm:max-w-[220px]">
+          <div className="relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#c5a16e] bg-gradient-to-br from-[#63313d] to-[#2b1921] shadow-[inset_0_1px_0_#ffffff30] [&>span]:text-[#f0d7a3] [&>svg]:text-[#f0d7a3]">
             {avatarUrl && !imgError ? (
               <img
                 src={avatarUrl}
@@ -190,7 +190,7 @@ export function DashboardHeader({ dictionary }: DashboardHeaderProps) {
             )}
           </div>
 
-          <span className="truncate text-xs font-semibold text-[var(--foreground)]">
+          <span className="truncate text-xs font-semibold text-[#f0e4d1]">
             {isLoading ? "Loading..." : adminName ?? "Admin"}
           </span>
         </div>
