@@ -1,4 +1,4 @@
-
+import { Button } from "@/src/components/ui/button";
 import WhyPartnerWithUs from "@/src/feature/public/home/components/WhyPartnerWithUs";
 import CustomizationSection from "@/src/feature/public/home/components/CustomizationSection";
 import FeaturedProducts from "@/src/feature/public/home/components/FeaturedProducts";
@@ -16,7 +16,13 @@ export default function HomePage() {
   return (
     <main className="w-full bg-background">
       <HeroBanner />
+
       <LanguageSwitcher />
+
+      <Button variant="accent">
+        Test Shadcn Button
+      </Button>
+
       <FeaturedProducts />
       <TrustStrip />
       <CustomizationSection />
@@ -25,7 +31,6 @@ export default function HomePage() {
       <QualityAssuranceTesting />
       <ClientReviews />
       <ContactUsPage />
-    
       <WhyPartnerWithUs />
       <FinalCtaSection />
     </main>

@@ -20,6 +20,7 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { useLanguage } from "@/src/providers";
 
+
 export interface TrustDisplayImage {
   /** Stable ID; entries follow the order of the four translated trust items. */
   id: string;

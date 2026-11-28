@@ -12,8 +12,11 @@ export type {
   DashboardDictionary,
   DashboardLayoutDictionary,
   DashboardLocale,
+  DashboardPageMeta,
+} from "./types/dashboard-dictionary.types";
+
+export type {
+  DashboardNavItem,
   DashboardNavGroupKey,
   DashboardNavKey,
-  DashboardPageMetaDictionary,
-} from "./types/dashboard-dictionary.types";
-export type { DashboardNavItem } from "./types/dashboard-navigation.types";
+} from "./types/dashboard-navigation.types";

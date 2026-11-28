@@ -23,6 +23,7 @@ import type {
   CategoryMediaAssignment,
   CategoryMediaRole,
   CategoryStatus,
+  CreateCategoryRequest,
   UpdateCategoryRequest,
 } from "../../types/category.types";
 
@@ -52,7 +53,7 @@ type CategoryFormProps = {
   availableAttributes?: readonly AttributeChoiceOption[];
   isSubmitting?: boolean;
   submitLabel?: string;
-  onSubmit: (payload: UpdateCategoryRequest) => Promise<void> | void;
+  onSubmit: (payload: CreateCategoryRequest) => Promise<void> | void;
   onCancel?: () => void;
 };
 
@@ -248,7 +249,7 @@ export function CategoryForm({
     const trimmedParent = parentId.trim();
     const trimmedDescription = description.trim();
 
-    const payload: UpdateCategoryRequest = {
+    const payload: CreateCategoryRequest = {
       parent_id: trimmedParent && isUuid(trimmedParent) ? trimmedParent : null,
       name: trimmedName,
       description: trimmedDescription ? trimmedDescription : null,

@@ -1,7 +1,3 @@
-// ==============================================================================
-// FILE 3: components/FinalCtaSection.jsx (React Component with 3D/Interactive Canvas Simulation)
-// Save as: app/components/FinalCtaSection.jsx (or equivalent)
-// ==============================================================================
 
 "use client";
 

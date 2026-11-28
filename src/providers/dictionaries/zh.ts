@@ -1,6 +1,62 @@
 
 
 const zh = {
+    dashboardPage: {
+    layout: {
+      brandSubtitle: "运营管理控制台",
+      groups: {
+        operations: "运营管理",
+        system: "系统设置",
+      },
+      nav: {
+        overview: "总览",
+        inventory: "库存",
+        catalog: "产品目录",
+        catalogOverview: "目录总览",
+        catalogProducts: "产品",
+        catalogCategories: "产品分类",
+        catalogAttributes: "产品属性",
+        orders: "订单",
+        customers: "客户",
+        security: "安全与多重身份验证",
+      },
+      sessionActive: "会话已激活",
+      roleLabel: "管理员",
+      storefront: "店铺主页",
+      languageLabel: "语言",
+      signOut: "退出登录",
+    },
+    overview: {
+      badge: "运营 // 01",
+      title: "运营总览",
+      description: "实时运营指标、履约状态和系统提醒。",
+    },
+    inventory: {
+      badge: "库存 // 02",
+      title: "库存管理",
+      description: "仓库分配、SKU库存阈值和库存变动。",
+    },
+    catalog: {
+      badge: "目录 // 03",
+      title: "产品目录",
+      description: "管理产品系列、规格、价格和款式。",
+    },
+    orders: {
+      badge: "发货 // 04",
+      title: "订单管理",
+      description: "跟踪进行中的订单、运输和履约流程。",
+    },
+    customers: {
+      badge: "客户 // 05",
+      title: "客户账户",
+      description: "客户资料、订单历史和账户权限。",
+    },
+    security: {
+      badge: "认证 // SEC",
+      title: "安全与多重身份验证",
+      description: "配置通行密钥、TOTP身份验证器和恢复密钥。",
+    },
+  },
   quotePage: {
     atelier: {
       changePhoto: "切换展示箱包",
